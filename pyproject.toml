@@ -4,4 +4,14 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "accelerate>=1.14.0",
+    "ipykernel>=7.3.0",
+    "ipywidgets>=8.1.8",
+    "matplotlib>=3.10.8",
+    "notebook>=7.5.0",
+    "qwen-vl-utils>=0.0.14",
+    "torch>=2.12.1",
+    "torchvision>=0.27.1",
+    "transformers>=4.45,<5",
+]
