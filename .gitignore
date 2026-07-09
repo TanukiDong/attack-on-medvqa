@@ -1,3 +1,6 @@
 .venv
 
 data/PubMedVision_demo
+
+data
+!data/MedVLM-R1/images
