@@ -1,0 +1,171 @@
+Spark version: 4.1.0
+Using CPUs: 4
+Reading parquet files from: /mnt/parscratch/users/acp25tw/datasets/OmniMedVQA-V2
+Number of parquet files: 72
+Loading data from parquet files...
+Loaded data
+
+Schema:
+root
+ |-- image: struct (nullable = true)
+ |    |-- bytes: binary (nullable = true)
+ |    |-- path: string (nullable = true)
+ |-- problem: string (nullable = true)
+ |-- solution: string (nullable = true)
+ |-- question: string (nullable = true)
+ |-- choice_a: string (nullable = true)
+ |-- choice_b: string (nullable = true)
+ |-- choice_c: string (nullable = true)
+ |-- choice_d: string (nullable = true)
+ |-- answer_letter: string (nullable = true)
+ |-- answer_text: string (nullable = true)
+ |-- modality: string (nullable = true)
+ |-- question_type: string (nullable = true)
+
+
+Total rows:
+177991
+Added subset, split, and category columns
++----------+-------------+-----+-----+
+|subset    |category     |split|count|
++----------+-------------+-----+-----+
+|mod-ct    |modality     |test |3241 |
+|mod-ct    |modality     |train|12567|
+|mod-derm  |modality     |test |1306 |
+|mod-derm  |modality     |train|5373 |
+|mod-fundus|modality     |test |1098 |
+|mod-fundus|modality     |train|4300 |
+|mod-micro |modality     |test |1110 |
+|mod-micro |modality     |train|4570 |
+|mod-mri   |modality     |test |6370 |
+|mod-mri   |modality     |train|25507|
+|mod-oct   |modality     |test |848  |
+|mod-oct   |modality     |train|3798 |
+|mod-us    |modality     |test |2074 |
+|mod-us    |modality     |train|8917 |
+|mod-xray  |modality     |test |1615 |
+|mod-xray  |modality     |train|6301 |
+|qt-ai     |question_type|test |3329 |
+|qt-ai     |question_type|train|13119|
+|qt-dd     |question_type|test |11058|
+|qt-dd     |question_type|train|44329|
+|qt-lg     |question_type|test |436  |
+|qt-lg     |question_type|train|1662 |
+|qt-mr     |question_type|test |2392 |
+|qt-mr     |question_type|train|9173 |
+|qt-oba    |question_type|test |704  |
+|qt-oba    |question_type|train|2794 |
++----------+-------------+-----+-----+
+
+Number of distinct normalised modality values: 8
++----------+-----+
+|modality  |count|
++----------+-----+
+|CT        |31617|
+|Dermoscopy|13358|
+|Fundus    |10796|
+|MRI       |63754|
+|Microscopy|11360|
+|OCT       |9292 |
+|Ultrasound|21982|
+|X-Ray     |15832|
++----------+-----+
+
+df rows: 177991
+df_mod rows: 88995
+df_qt rows: 88996
+df_mod + df_qt: 177991
++----------+-----+
+|modality  |count|
++----------+-----+
+|CT        |15808|
+|Dermoscopy|6679 |
+|Fundus    |5398 |
+|MRI       |31877|
+|Microscopy|5680 |
+|OCT       |4646 |
+|Ultrasound|10991|
+|X-Ray     |7916 |
++----------+-----+
+
+Rows in df_qt but not df_mod: 1
+Rows in df_mod but not df_qt: 0
+
+Extra row founds as :
+-RECORD 0-----------------------------------------------------------------------------------------
+ image_hash    | c525b0c3ca5a1c257066dc43fde8d08a100e3e3ffc8347b48dc47ff83f414a08                 
+ problem       | What imaging technique was employed for capturing this image? A)Angiography, ... 
+ answer_letter | D                                                                                
+
+Category : Modality
+Modality Distribution:
++----------+-----+-------+
+|modality  |count|percent|
++----------+-----+-------+
+|MRI       |31877|35.82  |
+|CT        |15808|17.76  |
+|Ultrasound|10991|12.35  |
+|X-Ray     |7916 |8.89   |
+|Dermoscopy|6679 |7.5    |
+|Microscopy|5680 |6.38   |
+|Fundus    |5398 |6.07   |
+|OCT       |4646 |5.22   |
++----------+-----+-------+
+
+Question Type Distribution:
++---------------------------+-----+-------+
+|question_type              |count|percent|
++---------------------------+-----+-------+
+|Disease Diagnosis          |57777|64.92  |
+|Anatomy Identification     |16259|18.27  |
+|Modality Recognition       |8017 |9.01   |
+|Other Biological Attributes|4931 |5.54   |
+|Lesion Grading             |2011 |2.26   |
++---------------------------+-----+-------+
+
+Answer Distribution (Modality):
++-------------+-----+-------+
+|answer_letter|count|percent|
++-------------+-----+-------+
+|A            |23880|26.83  |
+|B            |23978|26.94  |
+|C            |20499|23.03  |
+|D            |20638|23.19  |
++-------------+-----+-------+
+
+Category : Question Type
+Modality Distribution:
++----------+-----+-------+
+|modality  |count|percent|
++----------+-----+-------+
+|MRI       |31877|35.82  |
+|CT        |15809|17.76  |
+|Ultrasound|10991|12.35  |
+|X-Ray     |7916 |8.89   |
+|Dermoscopy|6679 |7.5    |
+|Microscopy|5680 |6.38   |
+|Fundus    |5398 |6.07   |
+|OCT       |4646 |5.22   |
++----------+-----+-------+
+
+Question Type Distribution:
++---------------------------+-----+-------+
+|question_type              |count|percent|
++---------------------------+-----+-------+
+|Disease Diagnosis          |55387|62.24  |
+|Anatomy Identification     |16448|18.48  |
+|Modality Recognition       |11565|12.99  |
+|Other Biological Attributes|3498 |3.93   |
+|Lesion Grading             |2098 |2.36   |
++---------------------------+-----+-------+
+
+Answer Distribution (Question Type):
++-------------+-----+-------+
+|answer_letter|count|percent|
++-------------+-----+-------+
+|A            |23880|26.83  |
+|B            |23978|26.94  |
+|C            |20499|23.03  |
+|D            |20639|23.19  |
++-------------+-----+-------+
+
