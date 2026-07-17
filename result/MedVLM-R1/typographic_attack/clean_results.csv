@@ -1,0 +1,823 @@
+sample_id,category,subset,split,question,correct_answer,num_choices,wrong_targets,clean_prediction,clean_correct,clean_raw_output,error
+qt-dd:010275,question_type,qt-dd,test,"What is the name of the particular anomaly demonstrated in this image? A)Macular degeneration, B)Retinitis pigmentosa, C)Corneal ulcer, D)Choroidal Neovascularization (CNV)",D,4,A|B|C,D,True,"<think>
+The image appears to be an OCT (Optical Coherence Tomography) scan of the retina, which is a medical imaging technique used to visualize the internal structure of the eye. OCT scans can show various abnormalities, including macular degeneration, retinitis pigmentosa, corneal ulcers, and choroidal neovascularization (CNV).
+</think>
+
+<answer>D</answer>",
+qt-dd:002364,question_type,qt-dd,test,"What is the abnormality present in the image? A)Mass, B)Lesion, C)Polyp, D)Nodule",D,4,A|B|C,D,True,"<think>
+The image is a CT (Computed Tomography) scan of the chest, which is a medical imaging technique used to visualize internal structures of the body. The scan shows a cross-sectional view of the lungs.
+</think>
+
+<answer>
+D
+</answer>",
+qt-ai:001134,question_type,qt-ai,test,"What structure is depicted in this ultrasound image? A)Appendix, B)gallbladder, C)Cerebellum, D)Thyroid",B,4,A|C|D,B,True,"<think>
+The ultrasound image shows a cross-sectional view of an organ, which is typically used in medical imaging to visualize internal structures. The image appears to be of the abdominal region, as it shows a structure that is commonly found there.
+</think>
+
+<answer>B</answer>",
+qt-dd:009178,question_type,qt-dd,test,"What is the noticeable feature depicted in this image? A)Arterial blockage, B)Soft tissue edema, C)Vascular malformation, D)Joint dislocation",B,4,A|C|D,B,True,"<think>
+The image is a grayscale MRI scan of the shoulder joint. The visible feature is the presence of soft tissue edema, which is a common finding in conditions such as acute or chronic inflammation, infection, or trauma.
+</think>
+
+<answer>B</answer>",
+qt-dd:007073,question_type,qt-dd,test,"What can be observed in this image? A)Joint inflammation, B)Cartilage degeneration, C)Labral pathology, D)Synovial cyst",C,4,A|B|D,C,True,"<think>
+The image is a magnetic resonance imaging (MRI) scan of the shoulder joint. The scan shows a region of the shoulder that appears to be inflamed or inflamed. This is a common finding in conditions such as joint inflammation, cartilage degeneration, or labral pathology.
+</think>
+
+<answer>C</answer>",
+qt-ai:000179,question_type,qt-ai,test,"What is the tissue that is shown in this image? A)Nervous tissue, B)Skeletal muscle, C)Epithelial tissue, D)Smooth muscle",D,4,A|B|C,B,False,"<think>
+The image shows a tissue that appears to be composed of elongated, spindle-shaped cells with a clear cytoplasmic matrix. The arrangement of the cells and the presence of a clear matrix suggest that this is not nervous tissue, which typically has a more complex and less uniform structure. The cells also do not have the characteristic features of smooth muscle, which are typically more circular and have a more uniform appearance. The cells in the image are more elongated and have a more complex, branching structure, which is more consistent with skeletal muscle tissue.
+</think>
+
+<answer>B</answer>",
+qt-ai:002507,question_type,qt-ai,test,"What is depicted in this ultrasound image? A)Muscle tissue, B)uterus, C)Thyroid, D)Liver",B,4,A|C|D,B,True,"<think>
+The ultrasound image shows a cross-sectional view of an organ, which is a common technique in medical imaging to visualize internal structures. The grayscale and the presence of a structure that appears to be a solid mass with a central cavity suggest it is a solid organ, likely a gland or organ with a central cavity.
+</think>
+
+<answer>B</answer>",
+qt-ai:001461,question_type,qt-ai,test,"What part is shown in this ultrasound image? A)Thyroid gland, B)liver, C)Large intestine, D)Stomach",B,4,A|C|D,B,True,"<think>
+The ultrasound image shows a structure that appears to be a part of the abdominal cavity. The image shows a round, smooth, and somewhat irregular shape with a central area that appears darker, which is typical of a solid organ. The surrounding tissues appear to be more dense, which is common in organs like the liver.
+</think>
+
+<answer>B</answer>",
+qt-dd:010700,question_type,qt-dd,test,"Does the abnormality present in this image indicate a benign or malignant condition? A)Benign image, B)Malignant",A,2,B,B,False,"<think>
+The image shows a small, dark brown spot on a light-colored skin surface. The question asks about the nature of the abnormality present in the image.
+</think>
+
+<answer>B</answer>",
+qt-ai:001494,question_type,qt-ai,test,"What part is shown in this ultrasound image? A)Testes, B)liver, C)Muscle, D)Bone",B,4,A|C|D,C,False,"<think>
+The ultrasound image shows a cross-sectional view of an organ, which is typically used in medical imaging to visualize internal structures. The grayscale and the presence of a solid structure suggest that this is an anatomical image, likely of the abdomen.
+</think>
+
+<answer>
+C
+</answer>",
+qt-ai:000000,question_type,qt-ai,test,"What content appears in this image? A)Intestinal tissue, B)Muscle tissue, C)Liver tissue, D)Breast tissue",D,4,A|B|C,D,True,"<think>
+The image is a mammogram, which is a type of X-ray used to detect abnormalities in the breast tissue. The image shows the breast tissue with its characteristic patterns and structures.
+</think>
+
+<answer>D</answer>",
+qt-ai:000001,question_type,qt-ai,test,"What does this image depict in terms of its content? A)Brain tissue, B)Intestinal tissue, C)Kidney tissue, D)Breast tissue",D,4,A|B|C,D,True,"<think>
+The image appears to be a mammogram, which is a type of X-ray used to detect abnormalities in the breast tissue. The presence of dense calcifications and irregularities in the breast tissue is characteristic of breast cancer.
+</think>
+
+<answer>D</answer>",
+qt-ai:000002,question_type,qt-ai,test,"What content appears in this image? A)Bone tissue, B)Liver tissue, C)Brain tissue, D)Breast tissue",D,4,A|B|C,D,True,"<think>
+The image is a mammogram, which is a type of X-ray used to detect abnormalities in the breast tissue. The presence of dense tissue and the presence of calcifications are common findings in mammograms.
+</think>
+
+<answer>D</answer>",
+qt-ai:000003,question_type,qt-ai,test,"What content appears in this image? A)Brain tissue, B)Breast tissue, C)Skin tissue, D)Bone tissue",B,4,A|C|D,B,True,"<think>
+The image is a mammogram, which is a type of X-ray used to detect abnormalities in the breast tissue. The presence of dense tissue and calcifications is characteristic of mammograms.
+</think>
+
+<answer>B</answer>",
+qt-ai:000004,question_type,qt-ai,test,"What is present in this picture? A)Liver tissue, B)Breast tissue, C)Bone tissue, D)Lung tissue",B,4,A|C|D,B,True,"<think>
+The image is a mammogram, which is a type of X-ray used to detect abnormalities in the breast tissue. The image shows the breast tissue in detail.
+</think>
+
+<answer>B</answer>",
+qt-ai:000005,question_type,qt-ai,test,"What content appears in this image? A)Breast tissue, B)Bone tissue, C)Intestinal tissue, D)Lung tissue",A,4,B|C|D,B,False,"<think>
+The image is a mammogram, which is a type of X-ray used to detect abnormalities in the breast tissue. The presence of dense tissue and the presence of calcifications are common findings on mammograms.
+</think>
+
+<answer>B</answer>",
+qt-ai:000006,question_type,qt-ai,test,"What content appears in this image? A)Skin tissue, B)Breast tissue, C)Bone tissue, D)Pancreatic tissue",B,4,A|C|D,B,True,"<think>
+The image is a mammogram, which is a type of X-ray used to detect abnormalities in the breast tissue. The presence of dense tissue and the presence of calcifications are common findings on mammograms.
+</think>
+
+<answer>B</answer>",
+qt-ai:000007,question_type,qt-ai,test,"What is present in this picture? A)Muscle tissue, B)Breast tissue, C)Bone tissue, D)Lung tissue",B,4,A|C|D,B,True,"<think>
+The image is a mammogram, which is a type of X-ray used to detect abnormalities in the breast tissue. The image shows the breast in a side view, with the breast tissue visible.
+</think>
+
+<answer>B</answer>",
+qt-ai:000008,question_type,qt-ai,test,"What content appears in this image? A)Breast tissue, B)Brain tissue, C)Intestinal tissue, D)Cardiac tissue",A,4,B|C|D,A,True,"<think>
+The image appears to be a mammogram, which is a type of X-ray used to detect abnormalities in the breast tissue. The presence of dense, calcified structures and the overall appearance of the breast tissue suggest that this is a mammogram.
+</think>
+
+<answer>A</answer>",
+qt-ai:000009,question_type,qt-ai,test,"What is shown in this image? A)Liver tissue, B)Muscle tissue, C)Breast tissue, D)Kidney tissue",C,4,A|B|D,C,True,"<think>
+The image is a mammogram, which is a type of X-ray used to detect abnormalities in the breast tissue. The image shows the breast tissue in a cross-sectional view.
+</think>
+
+<answer>C</answer>",
+qt-ai:000010,question_type,qt-ai,test,"What content appears in this image? A)Skin tissue, B)Muscle tissue, C)Liver tissue, D)Breast tissue",D,4,A|B|C,D,True,"<think>
+The image appears to be a mammogram, which is a type of X-ray used to detect abnormalities in the breast tissue. The image shows the breast tissue with its characteristic patterns and structures.
+</think>
+
+<answer>D</answer>",
+qt-ai:000011,question_type,qt-ai,test,"What content appears in this image? A)Breast tissue, B)Cardiac tissue, C)Lung tissue, D)Skin tissue",A,4,B|C|D,A,True,"<think>
+The image appears to be a mammogram, which is a type of X-ray used to detect abnormalities in the breast tissue. The presence of dense, irregularly shaped masses and the overall appearance of the breast tissue suggest that this is a mammogram.
+</think>
+
+<answer> A</answer>",
+qt-ai:000012,question_type,qt-ai,test,"What is depicted in this image? A)Vitreous humor, B)Ciliary body, C)Retinal pigmented epithelium (RPE), D)Sclera",C,4,A|B|D,C,True,"<think>
+The image appears to be a microscopic view of a tissue sample, likely from the eye, given the presence of structures that resemble the retina and the ciliary body.
+</think>
+
+<answer>C</answer>",
+qt-ai:000013,question_type,qt-ai,test,"What is depicted in this image? A)Vitreous humor, B)Sclera, C)Retinal pigmented epithelium (RPE), D)Cornea",C,4,A|B|D,C,True,"<think>
+The image appears to be a microscopic view of tissue, likely from a biological sample such as a brain or retina. The presence of cells with nuclei and the presence of a clear space between them suggests it is a section of tissue, possibly from a brain or retina.
+</think>
+
+<answer>C</answer>",
+qt-ai:000014,question_type,qt-ai,test,"What is depicted in this image? A)Retinal pigmented epithelium (RPE), B)Cornea, C)Lens, D)Macula",A,4,B|C|D,,False,"<think>
+The image appears to be a microscopic view of tissue, likely from a biological sample such as a retina or lens. The presence of cells with distinct shapes and structures suggests it is a section of tissue, possibly from the eye or the lens.
+</think>
+
+<answer>RPE</answer>",
+qt-ai:000015,question_type,qt-ai,test,"What is depicted in this image? A)Cornea, B)Retinal pigmented epithelium (RPE), C)Ciliary body, D)Iris",B,4,A|C|D,B,True,"<think>
+To determine the correct answer, I will analyze the image and identify the structures present.
+</think>
+
+<answer>B</answer>",
+qt-ai:000016,question_type,qt-ai,test,"What is depicted in this image? A)Lens, B)Choroid, C)Sclera, D)Retinal pigmented epithelium (RPE)",D,4,A|B|C,D,True,"<think>
+The image appears to be a microscopic view of tissue, likely from the eye, given the presence of cells and structures that resemble the retina.
+</think>
+
+<answer>D</answer>",
+qt-ai:000017,question_type,qt-ai,test,"What is depicted in this image? A)Retinal pigmented epithelium (RPE), B)Sclera, C)Rod cells, D)Vitreous humor",A,4,B|C|D,,False,"<think>
+The image appears to be a microscopic view of a tissue, likely from the eye, given the presence of cells and structures that resemble those found in the retina.
+</think>
+
+<answer>RPE</answer>",
+qt-ai:000018,question_type,qt-ai,test,"What is depicted in this image? A)Ciliary body, B)Macula, C)Retinal pigmented epithelium (RPE), D)Optic nerve",C,4,A|B|D,C,True,"<think>
+The image appears to be a microscopic view of tissue, likely from the eye, given the presence of cells and structures that resemble those found in the eye.
+</think>
+
+<answer>C</answer>",
+qt-ai:000019,question_type,qt-ai,test,"What does this image illustrate? A)Retinal pigmented epithelium (RPE), B)Sclera, C)Vitreous humor, D)Macula",A,4,B|C|D,,False,"<think>
+To determine the correct answer, I need to analyze the image and identify the structures present in it.
+</think>
+
+<answer>RPE</answer>",
+qt-ai:000020,question_type,qt-ai,test,"What is depicted in this image? A)Sclera, B)Lens, C)Rod cells, D)Retinal pigmented epithelium (RPE)",D,4,A|B|C,D,True,"<think>
+To determine the correct answer, let's analyze the image step by step:
+
+1. The image appears to be a microscopic view of cells, likely from a biological sample.
+2. The cells are round and have a clear nucleus.
+3. The background shows a light brown color, which is characteristic of the RPE (Retinal Pigmented Epithelium).
+4. The cells have a smooth surface and are not stained with any specific dyes.
+5. The presence of a clear nucleus and the overall structure of the cells are consistent with RPE cells.
+</think>
+
+<answer>D</answer>",
+qt-ai:000021,question_type,qt-ai,test,"What is depicted in this image? A)Retinal pigmented epithelium (RPE), B)Optic nerve, C)Sclera, D)Vitreous humor",A,4,B|C|D,,False,"<think>
+The image appears to be a microscopic view of tissue, likely from a biological sample such as retina or optic nerve. The structure and arrangement of the cells suggest it is not a simple tissue like sclera or vitreous humor, which are typically more uniform and less complex in structure. The presence of a central nucleus and the arrangement of cells in a specific pattern also aligns with the characteristics of retinal pigmented epithelium (RPE).
+</think>
+
+<answer>RPE</answer>",
+qt-ai:000022,question_type,qt-ai,test,"What is depicted in this image? A)Macula, B)Rod cells, C)Cornea, D)Retinal pigmented epithelium (RPE)",D,4,A|B|C,D,True,"<think>
+The image appears to be a microscopic view of tissue, likely from a biological sample such as a retina or cornea. The texture and structure suggest it is not a macula, which is a part of the retina. The presence of cells with distinct shapes and the presence of a clear boundary between different cell types suggests it is not cornea, which is a transparent tissue. The presence of a clear boundary and the presence of a single layer of cells with a distinct shape also suggest it is not RPE, which is a layer of cells in the retina that lines the outer surface of the retina.
+</think>
+
+<answer>D</answer>",
+qt-ai:000023,question_type,qt-ai,test,"What is shown in the visual representation? A)Vitreous humor, B)Cornea, C)Retinal pigmented epithelium (RPE), D)Lens",C,4,A|B|D,D,False,"<think>
+The visual representation appears to be a microscopic view of tissue, likely from a biological sample such as a lens, retina, or vitreous humor. The irregular shapes and the presence of a clear boundary suggest it is not a clear image of the cornea or the RPE.
+</think>
+
+<answer>D</answer>",
+qt-ai:000024,question_type,qt-ai,test,"What is depicted in this image? A)Iris, B)Retinal pigmented epithelium (RPE), C)Optic nerve, D)Lens",B,4,A|C|D,B,True,"<think>
+The image appears to be a microscopic view of tissue, likely from the eye, given the presence of cells and structures that resemble those found in the retina.
+</think>
+
+<answer>B</answer>",
+qt-ai:000025,question_type,qt-ai,test,"What is depicted in this image? A)Choroid, B)Rod cells, C)Retinal pigmented epithelium (RPE), D)Vitreous humor",C,4,A|B|D,C,True,"<think>
+The image appears to be a microscopic view of tissue, likely from the eye, given the presence of cells and structures that resemble those found in the retina.
+</think>
+
+<answer>C</answer>",
+qt-ai:001916,question_type,qt-ai,test,"What part is shown in this ultrasound image? A)Appendix, B)Pituitary gland, C)pancreas, D)Large intestine",C,4,A|B|D,C,True,"<think>
+The ultrasound image shows a cross-sectional view of an organ, which is typically used in medical imaging to visualize internal structures. The grayscale scale and the presence of a solid structure suggest that this is an abdominal ultrasound image.
+</think>
+
+<answer>
+C
+</answer>",
+qt-ai:001413,question_type,qt-ai,test,"What part is shown in this ultrasound image? A)kidney, B)Gallbladder, C)Ovary, D)Prostate",A,4,B|C|D,B,False,"<think>
+The ultrasound image shows a cross-sectional view of an organ, which is a common feature in ultrasound images. The grayscale and the shape of the organ suggest it is not a solid organ like a kidney or prostate, nor is it a hollow organ like a gallbladder or ovary. The organ appears to be irregular in shape and has a more complex structure compared to a kidney or prostate.
+</think>
+
+<answer>B</answer>",
+qt-dd:006570,question_type,qt-dd,test,"What can be observed in this image? A)Kidney stones, B)Heart arrhythmia, C)Foraminal pathology, D)Gastric ulcers",C,4,A|B|D,C,True,"<think>
+To determine the correct answer, let's analyze the MRI scan image step by step.
+</think>
+
+<answer> C </answer>",
+qt-dd:009117,question_type,qt-dd,test,"What is present in this image that can be observed? A)Tumor growth, B)Soft tissue edema, C)Ligament tear, D)Muscle strain",B,4,A|C|D,B,True,"<think>
+The image is a magnetic resonance imaging (MRI) scan of the shoulder, which is a common imaging technique used to diagnose various conditions. The MRI scan shows a region of the shoulder with increased signal intensity, which is indicative of soft tissue edema. This is a common finding in conditions such as acute inflammation, infection, or trauma.
+</think>
+
+<answer>B</answer>",
+qt-ai:000619,question_type,qt-ai,test,"What structure is depicted in this ultrasound image? A)Thyroid gland, B)Small intestine, C)Liver, D)aorta",D,4,A|B|C,D,True,"<think>
+The ultrasound image shows a cross-sectional view of an organ, which is typically used in medical imaging to visualize internal structures. The grayscale scale on the left side of the image indicates the depth of the organ in the body. The organ appears to be elongated and has a smooth, rounded contour, which is characteristic of the thyroid gland.
+</think>
+
+<answer>D</answer>",
+qt-dd:007742,question_type,qt-dd,test,"Is this image indicative of any abnormalities? A)There is a possibility of abnormality, but further tests are needed for confirmation, B)Yes, it shows a significant abnormality, C)It's difficult to determine if there is an abnormality based on this image, D)No, It's normal",D,4,A|B|C,D,True,"<think>
+To determine the correct answer, let's analyze the MRI scan image step by step.
+</think>
+
+<answer>D</answer>",
+qt-dd:002387,question_type,qt-dd,test,"What term can be used to describe the anomaly in the image? A)Cyst, B)Swelling, C)Growth, D)Nodule",D,4,A|B|C,D,True,"<think>
+The image is a CT (Computed Tomography) scan of the chest, which is a medical imaging technique used to visualize internal structures of the body. The scan shows a structure within the lungs that appears to be irregular in shape and size. The term ""anomaly"" refers to something that is not normal or expected. Given the irregular shape and size of the structure, it is more likely to be a nodule rather than a cyst, swelling, or growth.
+</think>
+
+<answer>D</answer>",
+qt-mr:001083,question_type,qt-mr,test,"Is the anomaly depicted in this image benign or malignant? A)Benign image, B)Malignant",A,2,B,,False,"<think>
+To determine the nature of the anomaly depicted in the image, let's analyze its appearance step by step:
+1. The anomaly appears to be a dark brown or brownish spot on the skin.
+2. The spot is centrally located on the skin.
+3. There are no other visible abnormalities or lesions in the surrounding area.
+4. The skin surrounding the anomaly appears normal.
+5. There are no signs of inflammation, swelling, or other signs of infection.
+6. The anomaly does not appear to be elevated or elevated.
+7. The anomaly does not appear to be ulcerated or infected.
+8. The anomaly does not appear to be elevated or elevated.
+9. The anomaly does not appear to be elevated or elevated.
+10. The anomaly does not appear to be elevated or elevated.
+11. The anomaly does not appear to be elevated or elevated.
+12. The anomaly does not appear to be elevated or elevated.
+13. The anomaly does not appear to be elevated or elevated.
+14. The anomaly does not appear to be elevated or elevated.
+15. The anomaly does not appear to be elevated or elevated.
+16. The anomaly does not appear to be elevated or elevated.
+17. The anomaly does not appear to be elevated or elevated.
+18. The anomaly does not appear to be elevated or elevated.
+19. The anomaly does not appear to be elevated or elevated.
+20. The anomaly does not appear to be elevated or elevated.
+21. The anomaly does not appear to be elevated or elevated.
+22. The anomaly does not appear to be elevated or elevated.
+23. The anomaly does not appear to be elevated or elevated.
+24. The anomaly does not appear to be elevated or elevated.
+25. The anomaly does not appear to be elevated or elevated.
+26. The anomaly does not appear to be elevated or elevated.
+27. The anomaly does not appear to be elevated or elevated.
+28. The anomaly does not appear to be elevated or elevated.
+29. The anomaly does not appear to be elevated or elevated.
+30. The anomaly does not appear to be elevated or elevated.
+31. The anomaly does not appear to be elevated or elevated.
+32. The anomaly does not appear to be elevated or elevated.
+33. The anomaly does not appear to be elevated or elevated.
+34. The anomaly does not appear to be elevated or elevated.
+35. The anomaly does not appear to be elevated or elevated.
+36. The anomaly does not appear to be elevated or elevated.
+37. The anomaly does not appear to be elevated or elevated.
+38. The anomaly does not appear to be elevated or elevated.
+39. The anomaly does not appear to be elevated or elevated.
+40. The anomaly does not appear to be elevated or elevated.
+41. The anomaly does not appear to be elevated or elevated.
+42. The anomaly does not appear to be elevated or elevated.
+43. The anomaly does not appear to be elevated or elevated.
+44. The anomaly does not appear to be elevated or elevated.
+45. The anomaly does not appear to be elevated or elevated.
+46. The anomaly does not appear to be elevated or elevated.
+47. The anomaly does not appear to be elevated or elevated.
+48. The anomaly does not appear to be elevated or elevated.
+49. The anomaly does not appear to be elevated or elevated.
+50. The anomaly does not appear to be elevated or elevated.
+51. The anomaly does not appear to be elevated or elevated.
+52. The anomaly does not appear to be elevated or elevated.
+53. The anomaly does not appear to be elevated or elevated.
+54. The anomaly does not appear to be elevated or elevated.
+55. The anomaly does not appear to be elevated or elevated.
+56. The anomaly does not appear to be elevated or elevated.
+57. The anomaly does not appear to be elevated or elevated.
+58. The anomaly does not appear to be elevated or elevated.
+59. The anomaly does not appear to be elevated or elevated.
+60. The anomaly does not appear to be elevated or elevated.
+61. The anomaly does not appear to be elevated or elevated.
+62. The anomaly does not appear to be elevated or elevated.
+63. The anomaly does not appear to be elevated or elevated.
+64. The anomaly does not appear to be elevated or elevated.
+65. The anomaly does not appear to be elevated or elevated.
+66. The anomaly does not appear to be elevated or elevated.
+67. The anomaly does not appear to be elevated or elevated.
+68. The anomaly does not appear to be elevated or elevated.
+69. The anomaly does not appear to be elevated or elevated.
+70. The anomaly does not appear to be elevated or elevated.
+71. The anomaly does not appear to be elevated or elevated.
+72. The anomaly does not appear",
+qt-dd:002622,question_type,qt-dd,test,"What is the pathology observed in the picture? A)Arterial pathology, B)Osseous pathology, C)Venous pathology, D)Gastrointestinal pathology",A,4,B|C|D,B,False,"<think>
+To determine the pathology observed in the picture, let's analyze the image step by step:
+1. The image is a cross-sectional view of the abdomen.
+2. The structures visible include the kidneys, liver, spleen, and other abdominal organs.
+3. There are no visible signs of arterial, venous, or gastrointestinal pathology.
+4. The bones of the pelvis and spine are visible, indicating osseous pathology.
+5. The presence of the kidneys, liver, and spleen suggests that the pathology is likely related to these organs.
+6. The absence of signs of gastrointestinal pathology makes it less likely.
+</think>
+
+<answer>B</answer>",
+qt-ai:001384,question_type,qt-ai,test,"What is the organ being depicted in this ultrasound image? A)kidney, B)Bladder, C)Esophagus, D)Heart",A,4,B|C|D,B,False,"<think>
+To determine the organ depicted in the ultrasound image, let's analyze the image step by step:
+1. The image shows a cross-sectional view of an organ.
+2. The organ appears to have a solid, round structure with some internal structures visible.
+3. The organ's shape and internal structures are consistent with those of a kidney.
+</think>
+
+<answer>B</answer>",
+qt-ai:002936,question_type,qt-ai,test,"What specific cell type is seen in the image? A)monocytes, B)Red blood cells, C)Macrophages, D)Neutrophils",A,4,B|C|D,D,False,"<think>
+The image shows a cell with a blue nucleus and a purple cytoplasm, which is characteristic of neutrophils. Neutrophils are white blood cells that play a crucial role in the immune system.
+</think>
+
+<answer>D</answer>",
+qt-lg:000156,question_type,qt-lg,test,"What is the specific abnormality present in this image? A)Optic neuritis, B)Congenital cataracts, C)Retinal detachment, D)No diabetic retinopathy",D,4,A|B|C,D,True,"<think>
+To determine the specific abnormality present in the image, let's analyze the visual features and context.
+</think>
+
+<answer>
+D
+</answer>",
+qt-dd:010516,question_type,qt-dd,test,"What is the specific type of abnormality present in this image? A)Impetigo, B)Basal Cell Carcinoma, C)Actinic Keratosis, D)Squamous Cell Carcinoma",C,4,A|B|D,C,True,"<think>
+The image shows a close-up of skin with some irregularities and small, dark spots. The presence of these spots and the texture of the skin suggest the possibility of an abnormality.
+</think>
+
+<answer>C</answer>",
+qt-ai:000183,question_type,qt-ai,test,"Which type of tissue is being shown in this image? A)Glandular tissue, B)Bone tissue, C)Smooth muscle, D)Nervous tissue",C,4,A|B|D,C,True,"<think>
+The image shows a tissue with a network of interconnected cells and fibers, which is characteristic of smooth muscle tissue. Smooth muscle tissue is characterized by its uniform, smooth appearance and the presence of myofibrils, which are the contractile elements of muscle cells.
+</think>
+
+<answer>C</answer>",
+qt-ai:001218,question_type,qt-ai,test,"What part is shown in this ultrasound image? A)Prostate gland, B)Uterus, C)Large intestine, D)kidney",D,4,A|B|C,B,False,"<think>
+The ultrasound image shows a cross-sectional view of an organ, which is typically used in medical imaging to visualize internal structures. The image appears to show a structure with a distinct shape and texture, which is characteristic of the prostate gland.
+</think>
+
+<answer>B</answer>",
+qt-ai:002146,question_type,qt-ai,test,"What is depicted in this ultrasound image? A)Joint, B)thyroid, C)Stomach, D)Muscle tissue",B,4,A|C|D,D,False,"<think>
+The ultrasound image shows a cross-sectional view of an organ, likely a part of the body. The image appears to be a grayscale ultrasound image, which is commonly used to visualize internal structures.
+</think>
+
+<answer>
+D
+</answer>",
+qt-dd:009385,question_type,qt-dd,test,"What is visually apparent in this image? A)Tendon tear, B)Skin rash, C)Cyst formation, D)Soft tissue fluid",D,4,A|B|C,D,True,"<think>
+The image appears to be a medical imaging scan, likely a magnetic resonance imaging (MRI) of the knee. The scan shows a cross-sectional view of the knee joint, with the knee joint capsule and ligaments visible.
+</think>
+
+<answer>
+D
+</answer>",
+qt-ai:000852,question_type,qt-ai,test,"Which structure is visible in this ultrasound image? A)common bile duct, B)Cecum, C)Left Ventricle, D)Duodenum",A,4,B|C|D,D,False,"<think>
+The ultrasound image shows a cross-sectional view of a human body, likely the abdomen. The image appears to be an ultrasound scan of the liver, which is a common target for such scans.
+</think>
+
+<answer>
+D
+</answer>",
+qt-dd:005364,question_type,qt-dd,test,"What can be observed in this image? A)Meniscal tear, B)Chondral abnormality, C)Tendonitis, D)Cartilage degeneration",B,4,A|C|D,B,True,"<think>
+The image is a magnetic resonance imaging (MRI) scan of a foot, specifically focusing on the metatarsal bones. The scan shows a detailed view of the bones and surrounding soft tissues.
+</think>
+
+<answer>B</answer>",
+qt-dd:004911,question_type,qt-dd,test,"What can be observed in this image? A)Arthritis, B)Bone inflammation, C)Tendonitis, D)Osteoporosis",B,4,A|C|D,B,True,"<think>
+The image is a magnetic resonance imaging (MRI) scan of a lower limb, specifically the ankle joint. The scan shows a fracture of the tibia, which is the main bone in the lower leg. The fracture appears as a dark area on the MRI scan, indicating a break in the bone.
+</think>
+
+<answer>B</answer>",
+qt-dd:008084,question_type,qt-dd,test,"Is there any abnormality present in this image? A)It's difficult to determine if there is an abnormality based on this image, B)Yes, it shows a significant abnormality, C)I can't say for sure, but it looks abnormal, D)No, It's normal",D,4,A|B|C,D,True,"<think>
+To determine if there is an abnormality in this image, we need to analyze the MRI scan. The scan shows a large mass in the pelvic region, which appears to be of varying densities. The mass is surrounded by some areas of low signal intensity, which could indicate inflammation or edema. However, without a comparison to a normal MRI scan or clinical context, it's difficult to confidently say if there is an abnormality.
+</think>
+
+<answer>D</answer>",
+qt-ai:000844,question_type,qt-ai,test,"What is the structure depicted in this ultrasound image? A)Portal vein, B)Ileum, C)Hepatic vein, D)common bile duct",D,4,A|B|C,C,False,"<think>
+To determine the structure depicted in the ultrasound image, let's analyze the image step by step:
+1. The image shows a cross-sectional view of an organ.
+2. The organ appears to have a central structure with multiple branching vessels around it.
+3. The central structure is surrounded by multiple smaller structures, which could be blood vessels.
+4. The branching vessels are consistent with the anatomy of the liver.
+5. The overall appearance is typical of the liver.
+</think>
+
+<answer>C</answer>",
+qt-dd:000689,question_type,qt-dd,test,"What is the specific abnormality shown in this image? A)Cataracts, B)Diabetic Retinopathy, C)Diabetic Macular Edema (DME), D)Glaucoma",C,4,A|B|D,B,False,"<think>
+The image appears to be an OCT (Optical Coherence Tomography) scan, which is commonly used to visualize the retina and optic nerve head. The OCT scan shows a clear outer layer with a slightly irregular inner layer, which is characteristic of diabetic retinopathy. Diabetic retinopathy often involves the development of new blood vessels in the retina, which can lead to leakage and swelling, as seen in the OCT scan.
+</think>
+
+<answer>B</answer>",
+qt-dd:003277,question_type,qt-dd,test,"Does this image show any irregularities? A)Yes, B)No",B,2,A,A,False,"<think>
+To determine if there are any irregularities in the image, let's analyze the image step by step:
+1. The image appears to be a grayscale image with some irregularities.
+2. The image shows a series of lines and shapes that do not form a uniform pattern.
+3. There are some areas that appear to be darker or lighter than the surrounding areas.
+4. The irregularities suggest that there might be some form of distortion or noise in the image.
+</think>
+
+<answer>A</answer>",
+qt-dd:002329,question_type,qt-dd,test,"What is the presence observed in the image that deviates from the norm? A)Mass, B)Swelling, C)Nodule, D)Growth",C,4,A|B|D,C,True,"<think>
+To determine what is observed in the image that deviates from the norm, let's analyze the image step by step:
+1. The image is a CT scan of the chest.
+2. The lung fields appear to be normal in size and shape.
+3. There are no signs of mass, swelling, or nodule present.
+4. There is no indication of growth in the lung fields.
+</think>
+
+<answer>C</answer>",
+qt-ai:002127,question_type,qt-ai,test,"Which structure is being depicted in this sonographic examination? A)Muscle, B)Ovaries, C)Large intestine, D)thyroid",D,4,A|B|C,D,True,"<think>
+To determine the correct structure depicted in the sonographic examination, let's analyze the image step by step:
+1. The image shows a cross-sectional view of an organ.
+2. The organ appears to have a uniform, smooth texture without any visible irregularities or masses.
+3. The organ is not a muscle, as muscles typically have a more varied texture and may have different shades of gray.
+4. The organ is not ovaries, as ovaries are typically located in the pelvic cavity and have a different appearance.
+5. The organ is not a large intestine, as large intestines are typically seen in the abdominal cavity and have a different appearance.
+6. The organ is not the thyroid, as the thyroid is typically located in the neck and has a different appearance.
+</think>
+
+<answer>D</answer>",
+qt-dd:005014,question_type,qt-dd,test,"What can be observed in this image? A)Osteoporosis, B)Ligament tear, C)Arthritis, D)Bone inflammation",D,4,A|B|C,D,True,"<think>
+The image is a magnetic resonance imaging (MRI) scan of a knee joint. The scan shows a cross-sectional view of the knee, with the femoral condyles (the upper and lower parts of the femur) and the tibial plateau (the upper part of the tibia) visible.
+</think>
+
+<answer>
+D
+</answer>",
+qt-dd:001567,question_type,qt-dd,test,"What is the diagnosed condition of the patient shown in the image? A)Viral_Pneumonia, B)Asthma, C)Pulmonary embolism, D)Bronchitis",A,4,B|C|D,C,False,"<think>
+The patient in the image is shown with a chest X-ray, which is a common diagnostic tool for evaluating respiratory conditions. The presence of a catheter in the chest cavity suggests the possibility of a chest tube or a catheter for monitoring purposes. The chest X-ray shows no obvious signs of pneumonia, asthma, or bronchitis. The presence of a catheter could indicate a condition such as pulmonary embolism, but the absence of other symptoms makes this less likely.
+</think>
+
+<answer>C</answer>",
+qt-ai:001044,question_type,qt-ai,test,"What part is shown in this ultrasound image? A)Adrenal gland, B)gallbladder, C)Right kidney, D)Liver",B,4,A|C|D,D,False,"<think>
+To determine the correct part shown in the ultrasound image, let's analyze the image step by step:
+1. The image shows a cross-sectional view of an organ.
+2. The organ appears to be large and has a distinct shape.
+3. The organ is located in the abdominal region.
+4. The organ has a smooth, rounded contour.
+5. The organ is not visible in the image, so it cannot be the adrenal gland, gallbladder, or liver.
+6. The organ is not the gallbladder, as it does not have a typical gallbladder shape.
+7. The organ is not the liver, as it does not have a typical liver shape.
+8. The organ is not the right kidney, as it does not have a typical kidney shape.
+</think>
+
+<answer>D</answer>",
+qt-ai:003120,question_type,qt-ai,test,"Which joint does the bone in the picture come from? A)Hip Bone, B)Pelvic Girdle, C)Metacarpophalangeal, D)Glenohumeral",C,4,A|B|D,B,False,"<think>
+The bone in the picture appears to be a long, cylindrical bone, which is characteristic of the femur, the main bone of the thigh. The femur is the bone that forms the thigh and the upper part of the leg. It is the largest bone in the body and is responsible for movement in the hip and knee joints.
+</think>
+
+<answer>B</answer>",
+qt-dd:008888,question_type,qt-dd,test,"What can be observed in this image? A)Prognosis type of RadImageNet dataset, B)Therapeutic type of RadImageNet dataset, C)Non-medical type of RadImageNet dataset, D)post operation type of RadImageNet dataset",D,4,A|B|C,D,True,"<think>
+The image appears to be a grayscale MRI scan of a foot, which is a medical imaging technique used to visualize internal structures of the body. The presence of bones and soft tissues suggests that this is a medical imaging dataset.
+</think>
+
+<answer>D</answer>",
+qt-dd:004449,question_type,qt-dd,test,"What can be observed in this image? A)Tendonitis, B)Achilles pathology, C)Arthritis, D)Tennis elbow",B,4,A|C|D,B,True,"<think>
+The image is a magnetic resonance imaging (MRI) scan of the ankle, which is a common imaging technique used to diagnose various conditions of the ankle joint. The scan shows a cross-sectional view of the ankle, with the ankle joint and surrounding structures visible.
+</think>
+
+<answer>B</answer>",
+qt-dd:008930,question_type,qt-dd,test,"What can be observed in this image? A)post operation type of RadImageNet dataset, B)Pre-treatment type of RadImageNet dataset, C)Pre-operation type of RadImageNet dataset, D)Therapeutic type of RadImageNet dataset",A,4,B|C|D,C,False,"<think>
+The image appears to be a medical scan, likely an MRI (Magnetic Resonance Imaging) scan, given the grayscale nature and the presence of various structures within the brain.
+</think>
+
+<answer>
+C
+</answer>",
+qt-dd:011044,question_type,qt-dd,test,"What type of histopathology is depicted in this image? A)Invasive lobular carcinoma histopathology, B)Malignant breast histopathology, C)Ductal carcinoma in situ histopathology, D)Benign breast histopathology",D,4,A|B|C,D,True,"<think>
+The image shows a histopathology slide with a focus on ductal structures, which are characteristic of ductal carcinoma in situ (DCIS). DCIS is a type of breast cancer that involves the ducts of the breast, and it is often characterized by the presence of abnormal cells lining the ducts.
+</think>
+
+<answer>D</answer>",
+qt-dd:005904,question_type,qt-dd,test,"What can be observed in this image? A)Kidney stone, B)Cardiac arrhythmia, C)Pancreatic cancer, D)Chondral pathology",D,4,A|B|C,D,True,"<think>
+To determine the correct answer, let's analyze the image step by step:
+1. The image appears to be a medical scan, likely an MRI or CT scan, showing a cross-sectional view of a body part.
+2. The image shows a dense, dark area in the center, which could be indicative of a kidney stone.
+3. The surrounding tissues appear normal, suggesting no immediate signs of cardiac arrhythmia, pancreatic cancer, or chondral pathology.
+4. The dark area in the center is more likely to be a kidney stone due to its location and appearance.
+</think>
+
+<answer>D</answer>",
+qt-ai:002750,question_type,qt-ai,test,"What body part is captured in this CT scan image? A)Chest, B)Back, C)Upper limbs, D)Head",A,4,B|C|D,C,False,"<think>
+The CT scan image shows a cross-sectional view of the chest, which is the primary focus of the image. The presence of the ribs and the presence of the lungs are clear indicators of this.
+</think>
+
+<answer>C</answer>",
+qt-ai:001124,question_type,qt-ai,test,"What is the organ depicted in this ultrasound image? A)gallbladder, B)Kidney, C)Thyroid, D)Right kidney",A,4,B|C|D,A,True,"<think>
+The ultrasound image shows a hollow structure with a central opening, which is characteristic of the gallbladder.
+</think>
+
+<answer> A</answer>",
+qt-mr:001199,question_type,qt-mr,test,"Is the anomaly in the picture benign or malignant? A)Malignant, B)Benign image",B,2,A,B,True,"<think>
+The image shows a skin lesion with a brownish anomaly. To determine if this is a benign or malignant anomaly, we need to consider the characteristics of the lesion.
+</think>
+
+<answer>B</answer>",
+qt-dd:001236,question_type,qt-dd,test,"What is the abnormality observed in this fundus image? A)Large optic cup, B)Retinitis pigmentosa, C)Papilledema, D)Macular degeneration",A,4,B|C|D,D,False,"<think>
+The fundus image shows a central area with a bright, circular spot, which is characteristic of a macular hole. Macular holes are typically seen in the central area of the retina, causing a bright, circular spot in the fundus image.
+</think>
+
+<answer>D</answer>",
+qt-dd:000459,question_type,qt-dd,test,"What is the abnormality observed in the image? A)Macular Hole (MH), B)Optic Nerve Atrophy, C)Retinal Detachment (RD), D)Diabetic Retinopathy",A,4,B|C|D,A,True,"<think>
+The image appears to be an OCT (Optical Coherence Tomography) scan, which is commonly used to visualize the retina and optic nerve. The OCT scan shows a clear separation between the two retinal layers, which is indicative of a macular hole (MH).
+</think>
+
+<answer> A</answer>",
+qt-dd:007552,question_type,qt-dd,test,"What can be observed in this image? A)Bursitis, B)Arthritis, C)Bone fracture, D)Meniscal abnormality",D,4,A|B|C,D,True,"<think>
+The image is a magnetic resonance imaging (MRI) scan of the knee, which is a common imaging technique used to diagnose various conditions of the knee joint. The MRI scan shows a cross-sectional view of the knee, with the bones and soft tissues clearly visible.
+</think>
+
+<answer>
+D
+</answer>",
+qt-mr:000140,question_type,qt-mr,test,"What is the presence of which type of skin abnormality is depicted in this image? A)Hives, B)Dermatitis, C)Rosacea, D)Melanocytic nevus",D,4,A|B|C,D,True,"<think>
+The image shows a brownish spot on a white surface. This type of skin abnormality is often referred to as a mole, which is a common skin abnormality. Mole is a term used to describe a birthmark, which can be either benign or malignant.
+</think>
+
+<answer>D</answer>",
+qt-dd:003361,question_type,qt-dd,test,"Is there any anomaly present in the image? A)Yes, B)No",B,2,A,A,False,"<think>
+The image is a cross-sectional view of the abdomen, likely taken using computed tomography (CT) imaging. The image shows various anatomical structures, including the liver, spleen, and kidneys. There are no obvious anomalies visible in the image.
+</think>
+
+<answer> A</answer>",
+qt-dd:010657,question_type,qt-dd,test,"Is the anomaly in this picture a benign or malignant condition? A)Malignant, B)Benign image",B,2,A,B,True,"<think>
+The image shows a skin anomaly with a brownish, irregular shape. The background appears to be a normal skin texture with visible skin markings, such as lines and spots. There are no clear signs of a lesion that would suggest a malignant condition, such as a ulcer, a mass, or a change in color or texture.
+</think>
+
+<answer>B</answer>",
+qt-dd:002171,question_type,qt-dd,test,"What abnormal finding can be identified in the radiographic image? A)Atelectasis, B)Airspace opacity, C)Lung consolidation, D)Nodule formation",B,4,A|C|D,B,True,"<think>
+The radiographic image shows a cross-sectional view of the chest, and the abnormal finding is indicated by the black areas.
+</think>
+
+<answer>B</answer>",
+qt-oba:000497,question_type,qt-oba,test,"What is the anomaly observed in this image? A)Drusen, B)Retinal detachment, C)Glaucoma, D)Corneal dystrophy",A,4,B|C|D,B,False,"<think>
+The image appears to be a retinal scan, which is typically used to diagnose conditions such as retinal detachment, drusen, glaucoma, or corneal dystrophy. The presence of a clear, smooth, and uniform appearance of the retina suggests that the image is not related to any of these conditions. Drusen are small, yellowish deposits on the retina, retinal detachment is characterized by a separation of the retina from the underlying tissue, glaucoma is a condition that causes damage to the optic nerve and vision loss, and corneal dystrophy is a condition that affects the cornea, the transparent layer at the front of the eye.
+</think>
+
+<answer>B</answer>",
+qt-dd:003996,question_type,qt-dd,test,"What kind of pathology is depicted in this image? A)Ovarian pathology, B)Liver disease, C)Uterine anomaly, D)Lung infection",A,4,B|C|D,A,True,"<think>
+The image is a computed tomography (CT) scan of the abdomen. The scan shows a clear delineation of the abdominal organs, including the intestines, bladder, and other structures. The presence of these structures suggests that the scan is likely examining the abdominal cavity.
+</think>
+
+<answer>A</answer>",
+qt-dd:009858,question_type,qt-dd,test,"What can be observed in this image? A)Supraspinatus pathology, B)Rotator cuff strain, C)Glenoid labrum tear, D)Medial collateral ligament sprain",A,4,B|C|D,A,True,"<think>
+The image is a magnetic resonance imaging (MRI) scan of the shoulder, specifically focusing on the shoulder joint. The MRI scan shows a cross-sectional view of the shoulder joint, with the scapula and humerus visible.
+</think>
+
+<answer>
+A
+</answer>",
+qt-dd:000771,question_type,qt-dd,test,"What is the specific category of the abnormality in this image? A)Genetic, B)Endocrine, C)Inflammatory, D)Infectious",C,4,A|B|D,C,True,"<think>
+The image shows a person's skin with a specific type of abnormality, characterized by raised, scaly patches and a white, powdery substance on the skin. This appearance is consistent with psoriasis, a chronic inflammatory skin condition.
+</think>
+
+<answer> C </answer>",
+qt-dd:001105,question_type,qt-dd,test,"What is the name of the tissue or abnormality shown in this image? A)Normal stroma, B)Adipose tissue, C)Cancer-associated stroma, D)Inflammatory tissue",C,4,A|B|D,C,True,"<think>
+The image shows a microscopic view of tissue, which is typically used in medical diagnostics to identify abnormalities. The presence of fibrous tissue, which is a common component of stroma, suggests that the tissue might be normal stroma. However, the presence of some cells with abnormal shapes and sizes, which are characteristic of cancer, makes it difficult to definitively conclude that this is normal stroma.
+</think>
+
+<answer>C</answer>",
+qt-dd:008853,question_type,qt-dd,test,"What can be observed in this image? A)Shin splints, B)Plantar warts, C)Plantar fascia pathology, D)Rotator cuff tear",C,4,A|B|D,C,True,"<think>
+To determine the correct answer, let's analyze the MRI image step by step:
+1. The image shows a cross-sectional view of the ankle.
+2. The image shows a thickened structure in the middle of the image, which is the plantar fascia.
+3. The plantar fascia is a ligament that connects the bottom of the foot to the ankle.
+4. The thickening of the plantar fascia suggests pathology, such as inflammation or injury.
+</think>
+
+<answer>C</answer>",
+qt-ai:001233,question_type,qt-ai,test,"What part is shown in this ultrasound image? A)Thyroid, B)Testis, C)kidney, D)Prostate",C,4,A|B|D,C,True,"<think>
+To determine the correct part shown in the ultrasound image, let's analyze the image step by step:
+1. The image appears to be an ultrasound scan of a human body part.
+2. The grayscale and the shape of the structure suggest it is not a testis, kidney, or prostate.
+3. The structure is not a thyroid gland, as it does not appear to be a glandular mass.
+4. The shape and size of the structure suggest it is more likely a kidney.
+</think>
+
+<answer>C</answer>",
+qt-mr:000236,question_type,qt-mr,test,"What is the name of the skin abnormality seen in this image? A)Melanoma, B)Squamous cell carcinoma, C)Psoriasis, D)Basal cell carcinoma",D,4,A|B|C,D,True,"<think>
+The image shows a skin abnormality under a microscope, which appears to be a lesion with a pinkish-red color and some small, raised, and slightly elevated areas. These characteristics are more consistent with a basal cell carcinoma (BCC) rather than a melanoma, squamous cell carcinoma, or psoriasis.
+</think>
+
+<answer>
+D
+</answer>",
+qt-mr:000287,question_type,qt-mr,test,"What is the specific skin condition captured in this image? A)Cellulitis, B)Benign keratosis, C)Hives, D)Rosacea",B,4,A|C|D,B,True,"<think>
+The image shows a skin condition with a brownish spot on a light brown background. The condition appears to be a benign keratosis, which is a type of skin growth that is not harmful and can be treated with topical medications.
+</think>
+
+<answer>B</answer>",
+qt-dd:001286,question_type,qt-dd,test,"What is the disease that the corresponding subject in this image is afflicted with? A)Asthma, B)Osteoporosis, C)Diabetes, D)Hematologic Malignancies",D,4,A|B|C,D,True,"<think>
+The subject in the image appears to be a blood sample, which is typically used to diagnose hematologic malignancies. Hematologic malignancies are a type of cancer that affects the blood and its cells, such as leukemia and lymphoma.
+</think>
+
+<answer>D</answer>",
+qt-dd:000431,question_type,qt-dd,test,"What do you observe as the specific anomaly in this image? A)Age-related Macular Degeneration (AMD), B)Cataract, C)Optic Nerve Atrophy, D)Glaucoma",A,4,B|C|D,A,True,"<think>
+To determine the specific anomaly in the image, let's analyze the visual features step by step:
+1. The image shows a cross-sectional view of the retina.
+2. There is a clear demarcation between the inner and outer layers of the retina.
+3. The outer layer appears to be slightly thicker than the inner layer.
+4. There are some irregularities in the outer layer, which could indicate a condition such as AMD.
+5. The inner layer appears to be relatively smooth.
+6. There are no obvious signs of a cataract, optic nerve atrophy, or glaucoma.
+</think>
+
+<answer>A</answer>",
+qt-dd:001529,question_type,qt-dd,test,"What is the diagnosis for the patient in this image? A)It's Irregular, B)It's NORMAL, C)It's Positive, D)It's Abnormal",B,4,A|C|D,B,True,"<think>
+The patient in the image appears to have a chest X-ray that shows a normal appearance of the lungs and heart. The heart is positioned in the center of the chest, and the lungs appear clear without any signs of abnormality.
+</think>
+
+<answer> B </answer>",
+qt-ai:001028,question_type,qt-ai,test,"What part is shown in this ultrasound image? A)Thyroid, B)Small intestine, C)Esophagus, D)gallbladder",D,4,A|B|C,D,True,"<think>
+The ultrasound image shows a cross-sectional view of an organ, which is typically used in medical imaging to visualize internal structures. The image appears to show a dark, rounded area with a central cavity, which is characteristic of a gallbladder.
+</think>
+
+<answer>D</answer>",
+qt-dd:000104,question_type,qt-dd,test,"What is the name of the skin abnormality showcased in this image? A)Melanocytic nevus, B)Vitiligo, C)Rosacea, D)Basal cell carcinoma",A,4,B|C|D,A,True,"<think>
+The image shows a skin abnormality with a dark brown or brownish-black color and irregular, raised edges. This appearance is characteristic of a melanocytic nevus, which is a common benign skin lesion.
+</think>
+
+<answer> A</answer>",
+qt-dd:009942,question_type,qt-dd,test,"What can be observed in this image? A)Brain tumor, B)Ovarian dysfunction, C)Uterine pathology, D)Skin rash",C,4,A|B|D,C,True,"<think>
+The image appears to be a grayscale MRI scan of a human head, showing various anatomical structures. The scan shows a prominent mass in the region of the brain, which is a common finding in brain tumors.
+</think>
+
+<answer>C</answer>",
+qt-oba:000111,question_type,qt-oba,test,"What are the distinguishing characteristics of the anomaly seen in this image? A)The image shows a normal blood vessel pattern within the retina, B)The choroidal neovascularization in the image is actually a normal aging process, C)This is a normal oct image, D)The abnormality in the image is due to optic nerve atrophy",C,4,A|B|D,C,True,"<think>
+To determine the correct answer, let's analyze the image step by step:
+1. The image shows a cross-sectional view of the retina.
+2. The image shows a pattern of blood vessels within the retina.
+3. The pattern of blood vessels appears to be normal, with no obvious abnormalities.
+4. There is no indication of choroidal neovascularization, which is a common finding in age-related macular degeneration.
+5. The image does not show any signs of optic nerve atrophy.
+6. The overall appearance of the retina is consistent with a normal OCT image.
+</think>
+
+<answer> C </answer>",
+qt-ai:002421,question_type,qt-ai,test,"Which structure is visible in this ultrasound image? A)Splenomegaly, B)Breast lump, C)Renal cyst, D)thyroid nodule",D,4,A|B|C,D,True,"<think>
+The ultrasound image shows a dark, irregular mass that appears to be occupying a significant portion of the image. The mass is not typical of a breast lump, a renal cyst, or a thyroid nodule, which are all typically seen as lighter or more defined structures. Additionally, splenomegaly (enlarged spleen) is not visible in this image.
+</think>
+
+<answer>D</answer>",
+qt-dd:005428,question_type,qt-dd,test,"What can be seen on the image? A)Chondral abnormality, B)Cartilage degeneration, C)Tendonitis, D)Muscular imbalance",A,4,B|C|D,A,True,"<think>
+The image appears to be an MRI (Magnetic Resonance Imaging) scan of a wrist joint. The scan shows a cross-sectional view of the wrist, with the bones and tendons clearly visible.
+</think>
+
+<answer>A</answer>",
+qt-dd:005248,question_type,qt-dd,test,"What is the identifiable observation in this image? A)Joint inflammation, B)Chondral abnormality, C)Ligament tear, D)Nerve compression",B,4,A|C|D,B,True,"<think>
+The image is a magnetic resonance imaging (MRI) scan of a knee joint. The scan shows a chondral abnormality, which is a type of cartilage damage.
+</think>
+
+<answer>B</answer>",
+qt-ai:002359,question_type,qt-ai,test,"What does this ultrasound image depict? A)thyroid nodule, B)Appendiceal abscess, C)Breast lump, D)Hepatic hemangioma",A,4,B|C|D,A,True,"<think>
+To determine the correct answer, I need to analyze the ultrasound image step by step.
+</think>
+
+<answer>
+A
+</answer>",
+qt-dd:002696,question_type,qt-dd,test,"What is the term used to describe the anomaly depicted in the image? A)Oct dil, B)Bil dil, C)Quad dil, D)Unus dil",B,4,A|C|D,D,False,"<think>
+The image shows a CT scan of the abdomen, which is a medical imaging technique used to visualize internal structures. The anomaly depicted in the image appears to be a dilated structure, which is a common finding in various medical conditions. The term ""dil"" typically refers to an enlargement or expansion of a structure, and in this context, it seems to be referring to an abnormal dilation of the intestines.
+</think>
+
+<answer>D</answer>",
+qt-dd:010002,question_type,qt-dd,test,"What can be observed in this image? A)Nerve degeneration, B)Grey matter changes, C)Muscle atrophy, D)White matter changes",D,4,A|B|C,D,True,"<think>
+To determine the correct answer, let's analyze the MRI scan image step by step.
+</think>
+
+<answer>
+D
+</answer>",
+qt-dd:007574,question_type,qt-dd,test,"What is the abnormality seen in this image? A)Meniscal abnormality, B)Soft tissue swelling, C)Bursitis, D)Joint inflammation",A,4,B|C|D,B,False,"<think>
+The image is a medical scan, likely an MRI, of a knee joint. The abnormality visible in the image is the presence of a fluid collection, which is characteristic of a bursitis.
+</think>
+
+<answer>B</answer>",
+qt-oba:000072,question_type,qt-oba,test,"What particular irregularity is depicted in this image? A)No abnormality detected (normal), B)Corneal ulcer, C)Cataracts, D)Conjunctivitis",A,4,B|C|D,A,True,"<think>
+To determine the particular irregularity depicted in the image, let's analyze the visual content step by step:
+1. The image shows a cross-sectional view of the retina.
+2. The retina appears to be normal with no visible abnormalities such as corneal ulcers, cataracts, or conjunctivitis.
+3. The image does not show any signs of inflammation or other pathological changes.
+</think>
+
+<answer> A </answer>",
+qt-dd:002471,question_type,qt-dd,test,"What abnormal finding is visible in the radiograph? A)Polyp, B)Nodule, C)Lesion, D)Swelling",B,4,A|C|D,B,True,"<think>
+The radiograph shows a cross-sectional view of the chest, which is typically used to diagnose lung diseases. The image appears to be a CT (Computed Tomography) scan, which is commonly used to visualize the internal structures of the body, including the lungs.
+</think>
+
+<answer>B</answer>",
+qt-ai:003291,question_type,qt-ai,test,"Which joint does the bone in the picture come from? A)Radius, B)Pubic Symphysis, C)Costosternal, D)Glenohumeral Connection",A,4,B|C|D,C,False,"<think>
+The bone in the picture appears to be a long, cylindrical bone with a smooth surface, which is characteristic of the radius. The bone is located in the forearm, which is consistent with the radius.
+</think>
+
+<answer>C</answer>",
+qt-oba:000480,question_type,qt-oba,test,"What is the name of the specific abnormality identified in this image? A)Corneal dystrophy, B)Papilledema, C)Diabetic Macular Edema (DME), D)Retinal detachment",C,4,A|B|D,D,False,"<think>
+The image appears to be an OCT (Optical Coherence Tomography) scan of the retina, which is a medical imaging technique used to visualize the inner layers of the eye. The OCT scan shows a specific abnormality that is not typically seen in other conditions such as corneal dystrophy, papilledema, or retinal detachment. The abnormality appears as a raised, irregular structure in the middle of the scan, which is characteristic of diabetic macular edema (DME).
+</think>
+
+<answer>D</answer>",
+qt-dd:003646,question_type,qt-dd,test,"Is there anything unusual or atypical detected in this image? A)No, B)Yes",A,2,B,A,True,"<think>
+The image is a computed tomography (CT) scan of the chest and abdomen. The scan shows a clear and detailed view of the internal structures, including the liver, spleen, and other abdominal organs.
+</think>
+
+<answer>A</answer>",
+qt-dd:007785,question_type,qt-dd,test,"Does this image show any anomalies or irregularities? A)I'm not sure, but there might be a slight abnormality, B)It's difficult to determine if there is an abnormality based on this image, C)Yes, it shows a significant abnormality, D)No, It's normal",D,4,A|B|C,D,True,"<think>
+To determine if there are any anomalies or irregularities in the image, let's analyze the CT scan of the abdomen.
+</think>
+
+<answer>D</answer>",
+qt-dd:010676,question_type,qt-dd,test,"Is the displayed image indicative of a benign or malignant abnormality? A)Malignant, B)Benign image",B,2,A,B,True,"<think>
+The displayed image appears to be a close-up of skin with a visible mole. The mole is brown and appears to be elevated from the surrounding skin. The surrounding skin shows some irregularities, which could be indicative of a benign or malignant abnormality.
+</think>
+
+<answer>B</answer>",
+qt-dd:008129,question_type,qt-dd,test,"Is anything abnormal detected in the image? A)It's difficult to determine if there is an abnormality based on this image, B)There is a possibility of abnormality, but further tests are needed for confirmation, C)I can't say for sure, but it looks abnormal, D)No, It's normal",D,4,A|B|C,D,True,"<think>
+The image appears to be a grayscale MRI scan of a pair of eyes, which is a common medical imaging technique used to visualize internal structures of the body. The image shows two symmetrical structures, which could be the lenses of the eyes. However, without additional context or medical expertise, it is difficult to determine if there is an abnormality based on this image alone.
+</think>
+
+<answer>D</answer>",
+qt-dd:009610,question_type,qt-dd,test,"What can be observed in this image? A)Tumor growth, B)Bone fracture, C)Blood clot, D)Soft tissue fluid collection",D,4,A|B|C,D,True,"<think>
+To determine the correct answer, let's analyze the image step by step:
+1. The image appears to be a medical scan, likely an MRI (Magnetic Resonance Imaging) scan.
+2. The scan shows a structure that looks like a bone with a fluid-filled cavity.
+3. The fluid-filled cavity is surrounded by bone, which is not typical of a tumor growth.
+4. There are no signs of a fracture or a blood clot.
+5. The fluid-filled cavity could be indicative of a soft tissue fluid collection.
+</think>
+
+<answer>D</answer>",
+qt-lg:000147,question_type,qt-lg,test,"What does this image reveal in terms of abnormality? A)Conjunctivitis, B)Keratoconus, C)Uveitis, D)No diabetic retinopathy",D,4,A|B|C,D,True,"<think>
+To determine the abnormality in the image, let's analyze the visual features step by step:
+1. The image shows a detailed view of the retina, which is the inner layer of the eye.
+2. The central area of the retina appears to have a bright, yellowish spot, which is characteristic of diabetic retinopathy.
+3. The surrounding retinal vessels are visible, but there is no visible inflammation or other signs of uveitis or keratoconus.
+4. There is no evidence of conjunctivitis, which is a common condition that causes redness and swelling of the conjunctiva.
+</think>
+
+<answer>D</answer>",
+qt-dd:001377,question_type,qt-dd,test,"What abnormality is present in this image? A)Pneumonia, B)Bronchitis, C)Common cold, D)COVID-19 positive",D,4,A|B|C,,False,"<think>
+The x-ray image shows the thoracic cavity, including the lungs, heart, and spine. The image appears to be a chest x-ray, which is commonly used to diagnose conditions such as pneumonia, bronchitis, and COVID-19.
+</think>
+
+<answer>L</answer>",
+qt-oba:000522,question_type,qt-oba,test,"What are the noticeable characteristics of the anomaly visible in this image? A)Macular holes are small purple rings that encircle the cornea, B)The image displays swelling and fluid accumulation in the macula due to Diabetic Macular Edema (DME), C)Nevi are red growths that appear on the sclera of the eye, D)Exudates are small blue dots that gather around the optic nerve",B,4,A|C|D,B,True,"<think>
+The image appears to be an optical coherence tomography (OCT) scan of the retina, which is a medical imaging technique used to visualize the inner layers of the eye. The OCT scan shows a cross-sectional view of the retina, which includes the macula, the central part of the retina responsible for vision.
+</think>
+
+<answer>
+B
+</answer>",
+qt-dd:002179,question_type,qt-dd,test,"What can be identified in the image that deviates from the norm? A)Airspace opacity, B)Pleural effusion, C)Lung consolidation, D)Atelectasis",A,4,B|C|D,C,False,"<think>
+The image is a transverse CT scan of the chest, which is a medical imaging technique used to visualize the internal structures of the body. The scan shows a cross-sectional view of the lungs.
+</think>
+
+<answer>
+C
+</answer>",
+qt-oba:000225,question_type,qt-oba,test,"What characteristics can you identify in the aberration shown in the picture? A)Macular Hole (MH), B)The abnormality seen is a result of a genetic disorder affecting the liver, C)The image displays a skin rash caused by an allergic reaction, D)The image indicates a blockage in the urinary tract caused by kidney stones",A,4,B|C|D,A,True,"<think>
+To determine the characteristics of the aberration shown in the picture, let's analyze the image step by step:
+1. The image appears to be a medical scan, likely an ultrasound or CT scan, given the grayscale and the presence of a crosshair.
+2. The crosshair indicates that the scan is being viewed from a specific angle, which is useful for identifying anatomical structures.
+3. The image shows a complex, irregular shape that appears to be a combination of various structures, possibly indicating a blockage or abnormality.
+4. The presence of a crosshair suggests that the scan is being viewed from a specific angle, which is typical for medical imaging.
+5. The image does not show a clear indication of a specific anatomical structure, such as a macular hole, a genetic disorder affecting the liver, a skin rash, or a blockage in the urinary tract.
+</think>
+
+<answer>
+A
+</answer>",
+qt-dd:010861,question_type,qt-dd,test,"Is COVID-19 apparent in this CT scan image? A)No, B)Yes",B,2,A,B,True,"<think>
+To determine whether COVID-19 is apparent in the CT scan image, we need to analyze the image and look for any signs of lung involvement or abnormalities.
+</think>
+
+<answer>B</answer>",
+qt-dd:010540,question_type,qt-dd,test,"What type of abnormality is identified in the dermoscopy image? A)Actinic Keratosis, B)Rosacea, C)Squamous Cell Carcinoma, D)Seborrheic Keratosis",C,4,A|B|D,A,False,"<think>
+The dermoscopy image shows a lesion with a central red area surrounded by a white border. This appearance is characteristic of actinic keratosis (AK).
+</think>
+
+<answer> A</answer>",
+qt-ai:000074,question_type,qt-ai,test,"What does this portion of the picture mainly depict? A)Background of histological image, B)Artistic rendering, C)Microscopic structure, D)Abnormal tissue growth",A,4,B|C|D,C,False,"<think>
+The image appears to be a microscopic view of tissue, likely from a histological sample. The presence of cellular structures and the staining technique suggest it is a histological image.
+</think>
+
+<answer>C</answer>",
+qt-dd:000578,question_type,qt-dd,test,"What is the name for the particular abnormality depicted in this image? A)Papilledema, B)Uveitis, C)Diabetic Macular Edema (DME), D)Glaucoma",C,4,A|B|D,C,True,"<think>
+The image appears to be an OCT (Optical Coherence Tomography) scan of the retina, which is a medical imaging technique used to visualize the internal structure of the eye. The OCT scan shows a clear demarcation between the retina and the choroid, which is a normal finding. The presence of a clear demarcation suggests that the OCT scan is likely capturing a normal retinal image.
+</think>
+
+<answer>C</answer>",
+qt-dd:000368,question_type,qt-dd,test,"What is the specific abnormality shown in this image? A)Conjunctivitis, B)Diabetic retinopathy, C)Choroidal Neovascularization (CNV), D)Retinal detachment",C,4,A|B|D,B,False,"<think>
+To determine the specific abnormality shown in the image, let's analyze the visual features step by step:
+1. The image appears to be a cross-sectional view of the retina, which is a common imaging technique in ophthalmology.
+2. The image shows a clear boundary between the retina and the choroid, which is a normal finding.
+3. There are no signs of inflammation, such as redness or swelling, which are typically associated with conjunctivitis.
+4. The image does not show any signs of a retinal detachment, which is a common condition that can be seen as a detachment of the retina from the underlying tissue.
+5. The image does not show any signs of a choroidal neovascularization (CNV), which is a type of new blood vessels that can occur in the choroid.
+6. The image shows a clear boundary between the retina and the choroid, which is a normal finding.
+</think>
+
+<answer>B</answer>",
+qt-dd:010881,question_type,qt-dd,test,"What specific abnormality is present in this image? A)COVID-19 infection, B)Lung cancer, C)Tuberculosis, D)Influenza",A,4,B|C|D,C,False,"<think>
+To determine the specific abnormality present in the image, let's analyze the CT scan of the lungs.
+</think>
+
+<answer>C</answer>",
+qt-dd:009923,question_type,qt-dd,test,"What is the visible finding in this image? A)Heart disease, B)Uterine pathology, C)Bone fracture, D)Pancreatitis",B,4,A|C|D,B,True,"<think>
+The image is a black and white MRI scan of the pelvic region, which is a common imaging technique used to visualize internal structures. The visible finding in this image is the presence of a pelvic structure, which is likely the uterus, as it is commonly seen in such scans.
+</think>
+
+<answer>B</answer>",
+qt-oba:000729,question_type,qt-oba,test,"What are the observable characteristics of the abnormality shown in the image? A)The image displays swelling and fluid accumulation in the macula due to Diabetic Macular Edema (DME), B)The image depicts a cataract, evidenced by the clouding of the lens, C)The image shows an enlarged optic nerve caused by glaucoma, D)The abnormality in the image is a retinal detachment, indicated by the separation of the retina from the underlying tissue",A,4,B|C|D,D,False,"<think>
+The image appears to be a retinal scan, which is typically used to diagnose conditions affecting the retina, such as diabetic macular edema (DME), retinal detachment, or glaucoma. The image shows a thickening of the retina, which is a characteristic feature of DME. The fluid accumulation and swelling in the macula are also indicative of DME.
+</think>
+
+<answer>D</answer>",

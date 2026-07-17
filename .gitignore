@@ -1,6 +1,9 @@
 .venv
 
-data/PubMedVision_demo
 
 data
+!data/PubMedVision_demo
+!data/OmniMedVQA
 !data/MedVLM-R1/images
+
+tmp*
