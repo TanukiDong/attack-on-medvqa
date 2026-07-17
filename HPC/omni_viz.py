@@ -115,6 +115,18 @@ print("df_mod rows:", df_mod_len)
 print("df_qt rows:", df_qt_len)
 print("df_mod + df_qt:", df_mod_len + df_qt_len)
 
+print("Number of train and test samples in each category:")
+category_split_pivot = (
+    df
+    .groupBy("category")
+    .pivot("split")
+    .count()
+    .fillna(0)
+    .orderBy("category")
+)
+
+category_split_pivot.show(truncate=False)
+
 df_mod.groupBy("modality").count().orderBy("modality").show(truncate=False)
 
 # Find extra sample
@@ -163,14 +175,14 @@ print("Modality Distribution:")
 modality_dist = show_dist(df_mod, "modality")
 print("Question Type Distribution:")
 question_type_dist = show_dist(df_mod, "question_type")
-print("Answer Distribution (Modality):")
+print("Answer Distribution")
 answer_dist_mod = show_dist(df_mod, "answer_letter", sort_by_count=False)
 print("Category : Question Type")
 print("Modality Distribution:")
 modality_dist_qt = show_dist(df_qt, "modality")
 print("Question Type Distribution:")
 question_type_dist_qt = show_dist(df_qt, "question_type")
-print("Answer Distribution (Question Type):")
+print("Answer Distribution:")
 answer_dist_qt = show_dist(df_qt, "answer_letter", sort_by_count=False)
 
 spark.stop()
