@@ -11,9 +11,12 @@ dependencies = [
     "ipywidgets>=8.1.8",
     "matplotlib>=3.10.8",
     "notebook>=7.5.0",
+    "pyspark>=4.2.0",
     "qwen-vl-utils>=0.0.14",
     "seaborn>=0.13.2",
+    "simpleitk>=2.5.5",
     "torch>=2.12.1",
+    "torchmetrics>=1.9.0",
     "torchvision>=0.27.1",
     "transformers>=4.45,<5",
 ]
