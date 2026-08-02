@@ -1,9 +1,11 @@
 .venv
-
+__pycache__
 
 data
 !data/PubMedVision_demo
-!data/OmniMedVQA
+!data/OmniMedVQA/sample
 !data/MedVLM-R1/images
+
+result/MedVLM-R1/ta/images
 
 tmp*
