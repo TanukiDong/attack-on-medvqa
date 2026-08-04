@@ -9,3 +9,11 @@ data
 result/MedVLM-R1/ta/images
 
 tmp*
+
+# Vim temporary files
+.*.sw?
+*.sw?
+
+# Result Folder
+result/
+HPC/output/
