@@ -25,14 +25,8 @@ python --version
 echo "============================================================"
 
 python HPC/extract_samples.py \
-    --data-root /mnt/parscratch/users/acp25tw/datasets/OmniMedVQA-V2 \
-    --results HPC/output/clean_results_mri.csv \
-    --output-root data/OmniMedVQA/sample_mri \
-    --selection-results HPC/output/correct_mri_samples.csv \
-    --samples-per-modality 100 \
-    --overwrite
-    
-spark-submit --driver-memory 32g ./OmniMedVQA_viz.py
+    --modality mri
+    --sample-count 100
 
 echo "============================================================"
 echo "Completed: $(date)"
