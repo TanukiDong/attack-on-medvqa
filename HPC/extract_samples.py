@@ -6,6 +6,7 @@ import shutil
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
+from time import perf_counter
 from typing import Any
 
 import torch
@@ -17,15 +18,18 @@ from transformers import (
     Qwen2VLForConditionalGeneration,
 )
 
-# TARGET_MODALITIES = ("MRI", "CT", "Ultrasound")
-TARGET_MODALITIES = ("MRI",)
-# SUBSET_TO_MODALITY = {
-#     "mod-ct": "CT",
-#     "mod-mri": "MRI",
-#     "mod-us": "Ultrasound",
-# }
+VERBOSE = False
+
+MODALITY_CHOICES = {
+    "mri": ("MRI", "mod-mri"),
+    "ct": ("CT", "mod-ct"),
+    "ultrasound": ("Ultrasound", "mod-us"),
+}
+
 SUBSET_TO_MODALITY = {
+    "mod-ct": "CT",
     "mod-mri": "MRI",
+    "mod-us": "Ultrasound",
 }
 
 MODEL_PATH = "JZPeterPan/MedVLM-R1"
@@ -59,18 +63,20 @@ def log(message: str) -> None:
     print(f"[{timestamp}] {message}", flush=True)
 
 
-def progress_text(counts: Counter[str], target: int) -> str:
-    """Return progress for all target modalities."""
-    return " | ".join(
-        f"{modality}: {counts[modality]}/{target}"
-        for modality in TARGET_MODALITIES
-    )
+def progress_text(
+    counts: Counter[str],
+    target: int,
+    target_modality: str,
+) -> str:
+    """Return progress for the selected modality."""
+    return f"{target_modality}: {counts[target_modality]}/{target}"
 
 
 def is_correct(prediction: dict[str, str]) -> bool:
     """Return whether a saved clean prediction matches the ground truth."""
     if prediction.get("clean_correct", "").strip().lower() == "true":
         return True
+
     return (
         prediction.get("clean_prediction", "").strip().upper()
         == prediction.get("correct_answer", "").strip().upper()
@@ -83,15 +89,12 @@ def read_predictions(path: Path) -> list[dict[str, str]]:
         log(f"No existing prediction file found at: {path}")
         return []
 
-    log(f"Reading existing predictions from: {path}")
     with path.open(encoding="utf-8", newline="") as file:
         predictions = list(csv.DictReader(file))
 
     correct_count = sum(is_correct(row) for row in predictions)
-    log(
-        f"Loaded {len(predictions)} previous predictions "
-        f"({correct_count} correct)."
-    )
+    if VERBOSE:
+        log(f"Loaded {len(predictions)} previous predictions ({correct_count} correct).")
     return predictions
 
 
@@ -117,16 +120,13 @@ def load_subset(data_root: Path, subset: str) -> Dataset:
             f"No test Parquet files found for {subset} under {subset_root}"
         )
 
-    log(
-        f"Loading {subset} from {len(parquet_files)} Parquet file(s) "
-        f"under {subset_root}"
-    )
     dataset = load_dataset(
         "parquet",
         data_files={"test": [str(path) for path in parquet_files]},
         split="test",
     )
-    log(f"Loaded {subset}: {len(dataset):,} test samples")
+    if VERBOSE:
+        log(f"Loaded {subset}: {len(dataset):,} test samples")
     return dataset
 
 
@@ -142,10 +142,12 @@ def extract_answer(output_text, tag="answer"):
     match = re.search(rf"<{tag}>\s*(.*?)\s*</{tag}>", output_text, re.DOTALL | re.IGNORECASE)
     return match.group(1).strip() if match else None
 
+
 @torch.inference_mode()
 def predict(
     model,
     processor,
+    device,
     image,
     question: str,
     choices: dict[str, str],
@@ -180,7 +182,7 @@ def predict(
         videos=video_inputs,
         padding=True,
         return_tensors="pt",
-    ).to("cuda")
+    ).to(device)
 
     generated_ids = model.generate(
         **inputs,
@@ -199,16 +201,12 @@ def predict(
         clean_up_tokenization_spaces=False,
     )[0]
 
-    log(f"Raw generated output: {output!r}")
-
     answer_text = extract_answer(output, tag="answer")
-
     letter_match = (
         re.search(r"\b([A-D])\b", answer_text, re.IGNORECASE)
         if answer_text
         else None
     )
-
     letter = letter_match.group(1).upper() if letter_match else None
 
     return (letter if letter in choices else None), output
@@ -218,12 +216,14 @@ def select_samples(
     data_root: Path,
     predictions: list[dict[str, str]],
     samples_per_modality: int,
+    target_modality: str,
+    target_subset: str,
 ) -> list[tuple[str, dict[str, str], dict[str, Any]]]:
-    """Return the first correct records for each requested modality."""
-    log("Selecting correct samples from the saved prediction records...")
+    """Return the first correct records for the selected modality."""
+    if VERBOSE:
+        log("Selecting correct samples from the saved prediction records...")
 
-    datasets: dict[str, Dataset] = {}
-    counts: Counter[str] = Counter()
+    dataset: Dataset | None = None
     selected = []
 
     for prediction in predictions:
@@ -236,17 +236,16 @@ def select_samples(
         except (KeyError, ValueError):
             continue
 
-        if subset not in SUBSET_TO_MODALITY:
+        if subset != target_subset:
             continue
 
-        modality = SUBSET_TO_MODALITY[subset]
-        if counts[modality] >= samples_per_modality:
-            continue
+        if len(selected) >= samples_per_modality:
+            break
 
-        if subset not in datasets:
-            datasets[subset] = load_subset(data_root, subset)
+        if dataset is None:
+            dataset = load_subset(data_root, target_subset)
 
-        record = datasets[subset][index]
+        record = dataset[index]
         if (
             record["problem"] != prediction["question"]
             or record["answer_letter"].strip().upper()
@@ -254,14 +253,8 @@ def select_samples(
         ):
             raise ValueError(f"Cached row does not match {prediction['sample_id']}")
 
-        selected.append((modality, prediction, record))
-        counts[modality] += 1
-        log(
-            f"Selected cached sample {prediction['sample_id']} for {modality}. "
-            f"Progress: {progress_text(counts, samples_per_modality)}"
-        )
+        selected.append((target_modality, prediction, record))
 
-    log(f"Cached selection complete. {progress_text(counts, samples_per_modality)}")
     return selected
 
 
@@ -284,13 +277,14 @@ def load_model():
     )
     model.eval()
     model.requires_grad_(False)
-    log("Model loaded successfully.")
+    if VERBOSE:
+        log("Model loaded successfully.")
 
-    log("Loading processor...")
     processor = AutoProcessor.from_pretrained(MODEL_PATH)
-    log("Processor loaded successfully.")
+    if VERBOSE:
+        log("Processor loaded successfully.")
 
-    return model, processor
+    return model, processor, device
 
 
 def create_missing_predictions(
@@ -299,126 +293,114 @@ def create_missing_predictions(
     predictions: list[dict[str, str]],
     selected: list[tuple[str, dict[str, str], dict[str, Any]]],
     samples_per_modality: int,
+    target_modality: str,
+    target_subset: str,
 ) -> None:
-    """Evaluate unseen records until every modality has enough correct samples."""
-    counts = Counter(modality for modality, _, _ in selected)
+    """Evaluate unseen records until the selected modality has enough samples."""
+    correct_count = len(selected)
     completed_ids = {row.get("sample_id", "") for row in predictions}
 
-    log(f"Required progress: {progress_text(counts, samples_per_modality)}")
+    if VERBOSE:
+        log(f"Required progress: {target_modality}: {correct_count}/{samples_per_modality}")
 
-    if all(
-        counts[modality] >= samples_per_modality
-        for modality in TARGET_MODALITIES
-    ):
+    if correct_count >= samples_per_modality:
         log("Enough correct cached samples already exist. Inference is not needed.")
         return
 
     log("Some modalities need more correct samples. Starting model inference.")
     model, processor = load_model()
 
-    log("Loading target modality datasets...")
-    datasets = {
-        subset: load_subset(data_root, subset)
-        for subset in SUBSET_TO_MODALITY
-    }
+    dataset = load_subset(data_root, target_subset)
 
     evaluated_count = 0
+    if VERBOSE:
+        log(f"{len(dataset):,} available samples. Current progress: {correct_count}/{samples_per_modality}")
 
-    for subset, dataset in datasets.items():
-        modality = SUBSET_TO_MODALITY[subset]
+    for index in range(len(dataset)):
+        if correct_count >= samples_per_modality:
+            log(f"Completed {target_modality}: {correct_count}/{samples_per_modality} correct samples.")
+            return
 
-        if counts[modality] >= samples_per_modality:
-            log(f"Skipping {subset}: {modality} target is already complete.")
+        sample_id = f"{target_subset}:{index:06d}"
+        if sample_id in completed_ids:
             continue
 
-        log(
-            f"Scanning {subset} ({modality}): {len(dataset):,} available samples. "
-            f"Current progress: {counts[modality]}/{samples_per_modality}"
-        )
+        record = dataset[index]
+        choices = choices_for(record)
 
-        for index in range(len(dataset)):
-            if all(
-                counts[target] >= samples_per_modality
-                for target in TARGET_MODALITIES
-            ):
-                log("All modality targets have been reached.")
-                return
-
-            if counts[modality] >= samples_per_modality:
-                log(
-                    f"Completed {modality}: "
-                    f"{counts[modality]}/{samples_per_modality} correct samples."
-                )
-                break
-
-            sample_id = f"{subset}:{index:06d}"
-            if sample_id in completed_ids:
-                continue
-
-            record = dataset[index]
-            choices = choices_for(record)
-
+        if VERBOSE:
             log(
                 f"Evaluating {sample_id} ({index + 1:,}/{len(dataset):,}) "
-                f"for {modality}..."
+                f"for {target_modality}..."
             )
 
-            predicted_letter, raw_output = predict(
-                model,
-                processor,
-                record["image"],
-                record["problem"],
-                choices,
-            )
+        predicted_letter, raw_output = predict(
+            model,
+            processor,
+            device,
+            record["image"],
+            record["problem"],
+            choices,
+        )
 
-            correct_answer = record["answer_letter"].strip().upper()
-            prediction = {
-                "sample_id": sample_id,
-                "category": "modality",
-                "subset": subset,
-                "split": "test",
-                "question": record["problem"],
-                "correct_answer": correct_answer,
-                "num_choices": str(len(choices)),
-                "wrong_targets": "|".join(
-                    letter for letter in choices if letter != correct_answer
-                ),
-                "clean_prediction": predicted_letter or "",
-                "clean_correct": str(predicted_letter == correct_answer),
-                "clean_raw_output": raw_output,
-                "error": "",
-            }
+        correct_answer = record["answer_letter"].strip().upper()
+        prediction = {
+            "sample_id": sample_id,
+            "category": "modality",
+            "subset": target_subset,
+            "split": "test",
+            "question": record["problem"],
+            "correct_answer": correct_answer,
+            "num_choices": str(len(choices)),
+            "wrong_targets": "|".join(
+                letter for letter in choices if letter != correct_answer
+            ),
+            "clean_prediction": predicted_letter or "",
+            "clean_correct": str(predicted_letter == correct_answer),
+            "clean_raw_output": raw_output,
+            "error": "",
+        }
 
-            append_prediction(results_path, prediction)
-            predictions.append(prediction)
-            completed_ids.add(sample_id)
-            evaluated_count += 1
+        append_prediction(results_path, prediction)
+        predictions.append(prediction)
+        completed_ids.add(sample_id)
+        evaluated_count += 1
 
-            if is_correct(prediction):
-                counts[modality] += 1
+        if is_correct(prediction):
+            correct_count += 1
 
-            displayed_prediction = predicted_letter or "NONE"
+        displayed_prediction = predicted_letter or "NONE"
+        if VERBOSE:
             log(
                 f"Result {sample_id}: predicted={displayed_prediction}, "
                 f"correct={correct_answer}, "
                 f"match={prediction['clean_correct']}"
             )
-            log(
-                f"Overall progress after {evaluated_count} new inference(s): "
-                f"{progress_text(counts, samples_per_modality)}"
-            )
-            log(f"Prediction saved to: {results_path}")
+            log(f"Overall progress {target_modality}: {correct_count}/{samples_per_modality}")
 
-    missing = {
-        modality: samples_per_modality - counts[modality]
-        for modality in TARGET_MODALITIES
-        if counts[modality] < samples_per_modality
-    }
-
-    if missing:
-        log(f"Warning: not enough correct samples were found: {missing}")
+    missing = samples_per_modality - correct_count
+    if missing > 0:
+        log(f"Warning: not enough correct {target_modality} samples were found. Missing: {missing}")
     else:
         log("Inference stage completed successfully.")
+
+
+def count_processed_samples(question_path: Path) -> int:
+    """Return the number of samples already written to question.json."""
+    if not question_path.exists():
+        return 0
+
+    try:
+        questions = json.loads(question_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise ValueError(
+            f"Could not read existing sample file: {question_path}"
+        ) from error
+
+    if not isinstance(questions, list):
+        raise ValueError(f"Expected a JSON list in: {question_path}")
+
+    return len(questions)
 
 
 def write_samples(
@@ -432,17 +414,11 @@ def write_samples(
         raise RuntimeError("No correct samples were selected, so nothing can be saved.")
 
     images_root = output_root / "images"
-    question_path = output_root / "question_mri.json"
-
-    log(f"Preparing to save {len(selected)} selected sample(s) to: {output_root}")
+    question_path = output_root / "question.json"
 
     if overwrite:
         log(f"Overwrite enabled. Removing existing image directory: {images_root}")
         shutil.rmtree(images_root, ignore_errors=True)
-    elif images_root.exists() or question_path.exists():
-        raise FileExistsError(
-            f"{output_root} already contains sample data; use --overwrite to replace it."
-        )
 
     images_root.mkdir(parents=True, exist_ok=True)
     questions = []
@@ -457,10 +433,6 @@ def write_samples(
             image = image.convert("RGB")
 
         image.save(image_path, format="PNG")
-        log(
-            f"Saved image {position}/{len(selected)}: "
-            f"{image_path} ({modality})"
-        )
 
         questions.append({
             "id": prediction["sample_id"],
@@ -485,19 +457,23 @@ def write_samples(
         json.dumps(questions, indent=2) + "\n",
         encoding="utf-8",
     )
-    log(f"Saved question file: {question_path}")
 
     selection_results.parent.mkdir(parents=True, exist_ok=True)
     with selection_results.open("w", encoding="utf-8", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=manifest[0].keys())
         writer.writeheader()
         writer.writerows(manifest)
-    log(f"Saved selection manifest: {selection_results}")
-
 
 def main() -> None:
+    total_start = perf_counter()
     parser = argparse.ArgumentParser(description=__doc__)
 
+    parser.add_argument(
+        "--modality",
+        choices=MODALITY_CHOICES,
+        default="mri",
+        help="Modality to extract: mri, ct, or ultrasound.",
+    )
     parser.add_argument(
         "--data-root",
         type=Path,
@@ -507,35 +483,79 @@ def main() -> None:
     parser.add_argument(
         "--results",
         type=Path,
-        default=Path("HPC/output/clean_results_mri.csv"),
+        default=None,
+        help="Prediction CSV path. Defaults to a modality-specific path.",
     )
     parser.add_argument(
         "--output-root",
         type=Path,
-        default=Path("data/OmniMedVQA/sample_mri"),
+        default=None,
+        help="Output directory. Defaults to a modality-specific path.",
     )
     parser.add_argument(
         "--selection-results",
         type=Path,
-        default=Path("HPC/output/correct_samples_mri.csv"),
+        default=None,
+        help="Selection CSV path. Defaults to a modality-specific path.",
     )
-    parser.add_argument("--samples-per-modality", type=int, default=10)
+    parser.add_argument("--samples", type=int, default=10)
     parser.add_argument("--overwrite", action="store_true")
+    parser.add_argument(
+        "--verbose",
+        action="store_true",
+        help="Show detailed progress and model output.",
+    )
 
     args = parser.parse_args()
+    
+    global VERBOSE
+    VERBOSE = args.verbose
 
-    if args.samples_per_modality < 1:
-        raise ValueError("--samples-per-modality must be at least 1")
+    if args.samples < 1:
+        parser.error("--samples must be at least 1")
+
+    target_modality, target_subset = MODALITY_CHOICES[args.modality]
+
+    if args.results is None:
+        args.results = Path(
+            "result/MedVLM-R1/extract_samples/"
+            f"clean_results_{args.modality}.csv"
+        )
+
+    if args.output_root is None:
+        args.output_root = Path(
+            f"data/OmniMedVQA/sample_{args.modality}"
+        )
+
+    if args.selection_results is None:
+        args.selection_results = Path(
+            "result/MedVLM-R1/extract_samples/"
+            f"correct_samples_{args.modality}.csv"
+        )
+
+    processed_count = count_processed_samples(
+        args.output_root / "question.json"
+    )
+
+    if args.samples < processed_count:
+        parser.error(
+            f"--samples ({args.samples}) cannot be "
+            f"less than the {processed_count} samples already processed in "
+            f"{args.output_root}."
+        )
 
     log("=" * 70)
     log("Starting OmniMedVQA correct-sample extraction")
     log(f"Model: {MODEL_PATH}")
+    log(f"Modality: {target_modality}")
+    log(f"Subset: {target_subset}")
     log(f"Data root: {args.data_root}")
     log(f"Predictions CSV: {args.results}")
     log(f"Output root: {args.output_root}")
     log(f"Selection CSV: {args.selection_results}")
-    log(f"Samples per modality: {args.samples_per_modality}")
-    log(f"Target total: {args.samples_per_modality * len(TARGET_MODALITIES)}")
+    log(f"Already processed: {processed_count}")
+    log(f"Samples per modality: {args.samples}")
+    log(f"Target total: {args.samples}")
     log(f"Overwrite: {args.overwrite}")
     log("=" * 70)
 
@@ -558,11 +578,12 @@ def main() -> None:
         args.samples_per_modality,
     )
 
-    log("Refreshing the selected samples after inference...")
     selected = select_samples(
         args.data_root,
         predictions,
-        args.samples_per_modality,
+        args.samples,
+        target_modality,
+        target_subset,
     )
 
     log("Stage 4/4: Saving selected samples")
@@ -576,12 +597,13 @@ def main() -> None:
     counts = Counter(modality for modality, _, _ in selected)
     log("=" * 70)
     log("Extraction completed")
-    log(f"Final counts: {progress_text(counts, args.samples_per_modality)}")
+    log(f"Final count: {progress_text(counts, args.samples, target_modality)}")
     log(f"Total samples saved: {len(selected)}")
     log(f"Images: {args.output_root / 'images'}")
-    log(f"Questions: {args.output_root / 'question_mri.json'}")
+    log(f"Questions: {args.output_root / 'question.json'}")
     log(f"Predictions: {args.results}")
     log(f"Selection manifest: {args.selection_results}")
+    log(f"Total runtime: {perf_counter() - total_start:.2f} seconds")
     log("=" * 70)
 
 
