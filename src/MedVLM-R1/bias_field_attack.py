@@ -1,3 +1,4 @@
+import argparse
 import csv
 import json
 import math
@@ -6,11 +7,10 @@ import random
 import re
 import shutil
 import sys
-import time
+from time import perf_counter
 from importlib.util import find_spec
 from pathlib import Path
 
-import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -32,20 +32,20 @@ from transformers.models.qwen2_vl.image_processing_qwen2_vl import smart_resize
 
 # ---------------------------- Experiment settings ----------------------------
 SEED = 42
-VERBOSE = 2
+VERBOSE = 1
 LEARNING_RATE = 0.01
-NUM_STEPS = 1000
+NUM_STEPS = 3000
 EVAL_STEP = 10
-PRINT_STEP = 50
+PRINT_STEP = 100
 OVERWRITE = True
 VALID_ANSWERS = ("A", "B", "C", "D")
 EARLY_STOPPING = True
-EARLY_STOPPING_PATIENCE = 5
+EARLY_STOPPING_PATIENCE = 0
 
 # Bias field
 EPSILON = 0.3
-CONTROL_POINT_SPACING = (12, 12)
-DOWNSCALE = 4
+CONTROL_POINT_SPACING = (16, 16)
+DOWNSCALE = 8 
 INTERPOLATION_ORDER = 3
 SPACE = "log"
 
@@ -53,6 +53,8 @@ SPACE = "log"
 LOSS_TYPE = "cross_entropy"     # Options: "cross_entropy"
 LOSS_SCOPE = "choice_answer"      # Options: "full_output", "choice_answer", "vocab_answer"
 TARGETED = False
+
+EXPERIMENT_NAME = f"cps_{CONTROL_POINT_SPACING[0]}_eps_{str(EPSILON).replace(".", "p")}"
 
 # Path
 MODEL_PATH = "JZPeterPan/MedVLM-R1"
@@ -67,9 +69,27 @@ def find_project_root():
     raise FileNotFoundError(f"Could not find project root starting from '{current}'")
 
 PROJECT_ROOT = find_project_root()
-SAMPLE_ROOT = PROJECT_ROOT / "data" / "OmniMedVQA" / "sample"
+SAMPLE_ROOT = PROJECT_ROOT / "data" / "OmniMedVQA" / "sample_mri"
 QUESTION_PATH = SAMPLE_ROOT / "question.json"
-OUTPUT_DIRECTORY = PROJECT_ROOT / "result" / "MedVLM-R1" / "bias_field_attack"
+
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument("--start-index", type=int, default=0)
+parser.add_argument("--end-index", type=int, default=None)
+parser.add_argument(
+    "--output-path",
+    type=Path,
+    default=Path("result") / "MedVLM-R1" / "bias_field_attack" / EXPERIMENT_NAME,
+)
+args = parser.parse_args()
+
+if args.start_index < 0:
+    parser.error("--start-index must be at least 0.")
+if args.end_index is not None and args.end_index < args.start_index:
+    parser.error("--end-index must be greater than or equal to --start-index.")
+
+OUTPUT_DIRECTORY = args.output_path
+if not OUTPUT_DIRECTORY.is_absolute():
+    OUTPUT_DIRECTORY = PROJECT_ROOT / OUTPUT_DIRECTORY
 RESULT_FILE_PATH = OUTPUT_DIRECTORY / "attack_results.jsonl"
 HISTORY_FILE_PATH = OUTPUT_DIRECTORY / "attack_history.csv"
 ADVERSARIAL_IMAGE_DIRECTORY  = OUTPUT_DIRECTORY / "attacked_images"
@@ -92,6 +112,9 @@ HISTORY_FIELDS = [
     "prob_B",
     "prob_C",
     "prob_D",
+    "predicted_answer",
+    "attack_success",
+    "evaluated",
 ]
 
 if OVERWRITE:
@@ -124,14 +147,21 @@ with QUESTION_PATH.open(encoding="utf-8") as file:
     all_samples = json.load(file)
 
 all_mri_samples = [sample for sample in all_samples if sample.get("modality") == "MRI"]
+selected_mri_samples = all_mri_samples[args.start_index:args.end_index]
 completed_question_ids = load_completed_ids(RESULT_FILE_PATH)
 mri_samples = (
-    all_mri_samples
+    selected_mri_samples
     if OVERWRITE
     else [sample for sample in all_mri_samples
         if str(sample["id"]) not in completed_question_ids])
     
-print(f"Loaded {len(all_mri_samples)} MRI samples, {len(mri_samples)} samples remaining to be processed.")
+print(
+    f"Loaded {len(all_mri_samples)} MRI samples, "
+    f"selected indices [{args.start_index}:{args.end_index}], "
+    f"{len(mri_samples)} samples remaining to be processed."
+)
+
+
 
 if not torch.cuda.is_available():
     raise RuntimeError(
@@ -687,7 +717,7 @@ def compute_loss(image, inputs, labels, target, loss_type=LOSS_TYPE, loss_scope=
             raise RuntimeError("The loss has no gradient")
         
         
-        if LOSS_SCOPE == "choice_answer":
+        if loss_scope == "choice_answer":
             choice_token_ids = torch.tensor(
                 [ANSWER_TOKEN_IDS[x] for x in VALID_ANSWERS],
                 device=selected_logits.device,
@@ -764,9 +794,9 @@ def attack_bf(image, problem, target, reference_output=None, num_steps=NUM_STEPS
     if eval_step < 1:
         raise ValueError("eval_step must be at least 1.")
 
-    if early_stopping and patience < 1:
+    if early_stopping and patience < 0:
         raise ValueError(
-            "patience must be at least 1 when early stopping is enabled."
+            "patience must be at least 0 when early stopping is enabled."
         )
     
     if VERBOSE:
@@ -819,6 +849,15 @@ def attack_bf(image, problem, target, reference_output=None, num_steps=NUM_STEPS
         adam_loss = -loss
         adam_loss.backward()
         
+        # Attack history
+        history_entry = {
+            "step": step + 1,
+            "loss": loss_value,
+            "predicted_answer": None,
+            "attack_success": None,
+            "evaluated": False,
+        }
+        
         if (step + 1) % eval_step == 0 or step == num_steps - 1:
             intermediate_output = run_model(question=problem, image=adversarial_image.detach())
             intermediate_answer = extract_answer(intermediate_output, tag="answer")
@@ -829,7 +868,11 @@ def attack_bf(image, problem, target, reference_output=None, num_steps=NUM_STEPS
                 attack_success = valid_answer and intermediate_answer == target
             else:
                 attack_success = valid_answer and intermediate_answer != target
-
+            
+            history_entry["predicted_answer"] = intermediate_answer
+            history_entry["attack_success"] = attack_success
+            history_entry["evaluated"] = True
+            
             # Criteria 1 : No best candidate yet
             # Criteria 2 : Success when no success yet
             # Criteria 3 : No success yet → Higher loss is better
@@ -882,11 +925,6 @@ def attack_bf(image, problem, target, reference_output=None, num_steps=NUM_STEPS
                 for letter, probability in zip(VALID_ANSWERS, choice_probs):
                     print(f"  {letter}: {probability.item() * 100:.2f}%")
 
-        # Attack history
-        history_entry = {
-            "step": step + 1,
-            "loss": loss_value,
-        }
         if choice_probs is not None:
             history_entry["answer_probabilities"] = {
                 letter: probability.detach().cpu().item()
@@ -919,13 +957,15 @@ def attack_bf(image, problem, target, reference_output=None, num_steps=NUM_STEPS
     return best_candidate, history
 
 if __name__ == "__main__":
+    torch.cuda.synchronize()
+    total_start = perf_counter()
     set_seed(SEED)
     ANSWER_TOKEN_IDS = extract_answer_token_ids(tokenizer)
     
     for sample_index, sample in enumerate(tqdm(mri_samples, desc="MRI VQA tasks", disable=not sys.stdout.isatty())):
         
         torch.cuda.synchronize()
-        sample_start_time = time.perf_counter()
+        sample_start_time = perf_counter()
     
         question_id = str(sample["id"])
         image_path = SAMPLE_ROOT / sample.get("image")[0]
@@ -971,12 +1011,21 @@ if __name__ == "__main__":
             "correct_answer": solution,
             "adversarial_answer": adversarial_output["answer"],
             "attack_success": adversarial_output["attack_success"],
+            
+            "control_point_spacing": CONTROL_POINT_SPACING[0],
+            "epsilon": EPSILON,
+            "downscale": DOWNSCALE,
+            "interpolation_order": INTERPOLATION_ORDER,
+            "space": SPACE,
+            
             "learning_rate": LEARNING_RATE,
             "steps": len(attack_history),
             "eval_step": EVAL_STEP,
+            
             "best_step": adversarial_output["step"],
             "best_loss": adversarial_output["loss"],
             "image_loss": adversarial_output["image_loss"],
+            
             "original_image_path": relative_to_project(image_path),
             "attacked_image_path": relative_to_project(adversarial_output["attacked_image_path"]),
             "bias_field_path": relative_to_project(adversarial_output["bias_field_path"]),
@@ -1001,9 +1050,16 @@ if __name__ == "__main__":
                     "prob_B": probabilities.get("B"),
                     "prob_C": probabilities.get("C"),
                     "prob_D": probabilities.get("D"),
+                    "predicted_answer": entry["predicted_answer"],
+                    "attack_success": entry["attack_success"],
+                    "evaluated": entry["evaluated"],
                 })
         torch.cuda.synchronize()
-        sample_time = time.perf_counter() - sample_start_time
+        sample_time = perf_counter() - sample_start_time
         print(f"Saved results for ID:{question_id} | {sample_index + 1}/{len(mri_samples)} | Time: {sample_time:.2f}s ({sample_time / 60:.2f}m)")
-        
+    
+    torch.cuda.synchronize()
+    total_time = perf_counter() - total_start
     print(f"\nFinished running script.")
+    print(f"Total runtime: {total_time:.2f}s ({total_time / 60:.2f}m, {total_time / 3600:.2f}h)")
+    
