@@ -258,16 +258,33 @@ def select_samples(
     return selected
 
 
-def load_model():
-    if not torch.cuda.is_available():
-        raise RuntimeError("CUDA is unavailable.")
+def load_model(use_cpu: bool = False):
+    if use_cpu:
+        device = "cpu"
+        dtype = torch.float32
+        if VERBOSE:
+            log("Running on CPU.")
+    else:
+        if not torch.cuda.is_available():
+            raise RuntimeError(
+                "CUDA is unavailable. Use --cpu to run on CPU."
+            )
 
-    device_name = torch.cuda.get_device_name(0)
-    dtype = torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16
+        device = "cuda"
+        device_name = torch.cuda.get_device_name(0)
+        dtype = (
+            torch.bfloat16
+            if torch.cuda.is_bf16_supported()
+            else torch.float16
+        )
 
-    log(f"CUDA device: {device_name}")
-    log(f"Model dtype: {dtype}")
-    log(f"Loading model: {MODEL_PATH}")
+        if VERBOSE:
+            log(f"CUDA device: {device_name}")
+
+    if VERBOSE:
+        log(f"Device: {device}")
+        log(f"Model dtype: {dtype}")
+        log(f"Loading model: {MODEL_PATH}")
 
     model = Qwen2VLForConditionalGeneration.from_pretrained(
         MODEL_PATH,
@@ -295,6 +312,7 @@ def create_missing_predictions(
     samples_per_modality: int,
     target_modality: str,
     target_subset: str,
+    use_cpu: bool = False,
 ) -> None:
     """Evaluate unseen records until the selected modality has enough samples."""
     correct_count = len(selected)
@@ -307,8 +325,7 @@ def create_missing_predictions(
         log("Enough correct cached samples already exist. Inference is not needed.")
         return
 
-    log("Some modalities need more correct samples. Starting model inference.")
-    model, processor = load_model()
+    model, processor, device = load_model(use_cpu=use_cpu)
 
     dataset = load_subset(data_root, target_subset)
 
@@ -501,6 +518,11 @@ def main() -> None:
     parser.add_argument("--samples", type=int, default=10)
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument(
+        "--cpu",
+        action="store_true",
+        help="Run inference on CPU instead of CUDA.",
+    )
+    parser.add_argument(
         "--verbose",
         action="store_true",
         help="Show detailed progress and model output.",
@@ -566,7 +588,9 @@ def main() -> None:
     selected = select_samples(
         args.data_root,
         predictions,
-        args.samples_per_modality,
+        args.samples,
+        target_modality,
+        target_subset,
     )
 
     log("Stage 3/4: Generating any missing predictions")
@@ -575,7 +599,10 @@ def main() -> None:
         args.results,
         predictions,
         selected,
-        args.samples_per_modality,
+        args.samples,
+        target_modality,
+        target_subset,
+        use_cpu=args.cpu,
     )
 
     selected = select_samples(
