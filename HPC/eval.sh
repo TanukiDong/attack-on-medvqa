@@ -3,9 +3,9 @@
 #SBATCH --partition=gpu
 #SBATCH --qos=gpu
 #SBATCH --gres=gpu:1
-#SBATCH --mem=32G
+#SBATCH --mem=16G
 #SBATCH --time=1:00:00
-#SBATCH --array=0-8
+#SBATCH --array=0-11
 #SBATCH --output=./HPC/output/validate_results_%A_%a.out
 #SBATCH --error=./HPC/output/validate_results_%A_%a.err
 #SBATCH --mail-type=ALL
@@ -13,7 +13,7 @@
 
 cd "$HOME/dissertation/attack-on-medvqa"
 
-source env.sh
+source gpu_env.sh
 
 CONFIGS=(
     "cps_8_eps_0p1"
@@ -24,7 +24,10 @@ CONFIGS=(
     "cps_16_eps_0p5"
     "cps_24_eps_0p1"
     "cps_24_eps_0p3"
+    "cps_24_eps_0p5"
+    "cps_32_eps_0p1"
     "cps_32_eps_0p3"
+    "cps_32_eps_0p5"
 )
 
 CONFIG="${CONFIGS[$SLURM_ARRAY_TASK_ID]}"
@@ -39,7 +42,7 @@ echo "Configuration: ${CONFIG}"
 python --version
 echo "============================================================"
 
-python HPC/eval_batches_config.py --config "$CONFIG"
+python HPC/eval.py --config "$CONFIG"
 
 echo "============================================================"
 echo "Completed: $(date)"

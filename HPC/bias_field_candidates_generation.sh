@@ -12,7 +12,7 @@
 
 cd "$HOME/dissertation/attack-on-medvqa"
 
-source env.sh
+source gpu_env.sh
 
 echo "============================================================"
 echo "Job ID: ${SLURM_JOB_ID:-N/A}"
