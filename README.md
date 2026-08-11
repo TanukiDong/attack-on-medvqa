@@ -2,7 +2,11 @@
 Attack on MedVQA
 
 
-Extract correct samples from OmniMedVQA
+Combine results from batches
 ```bash
-python HPC/extract_samples.py --samples-per-modality 100 --overwrite
+
+python HPC/combine_result.py
+
+# Default path : result/MedVLM-R1/bias_field_attack
+python combine_result.py path/to/attack/result/folder
 ```

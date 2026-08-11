@@ -22,10 +22,11 @@ def combine_experiment(experiment_dir: Path):
     output_dir = experiment_dir.parent
 
     output_jsonl = output_dir / f"{experiment_name}_attack_results.jsonl"
+    output_validated_jsonl = output_dir / f"{experiment_name}_validated_attack_results.jsonl"
     output_csv = output_dir / f"{experiment_name}_attack_history.csv"
 
     # Skip if already processed
-    if output_jsonl.exists() and output_csv.exists():
+    if output_jsonl.exists() and output_validated_jsonl.exists() and output_csv.exists():
         print(f"[SKIP] {experiment_name} already processed")
         return
 
@@ -60,12 +61,36 @@ def combine_experiment(experiment_dir: Path):
                     record = json.loads(line)
 
                     record["experiment"] = experiment_name
-                    record["control_point_spacing"] = cps
-                    record["epsilon"] = epsilon
                     record["batch"] = batch_dir.name
 
                     outfile.write(json.dumps(record) + "\n")
                     total_results += 1
+
+    # Combine validated_attack_results.jsonl
+    total_validated_results = 0
+
+    with output_validated_jsonl.open("w", encoding="utf-8") as outfile:
+        for batch_dir in batch_dirs:
+            input_file = batch_dir / "validated_attack_results.jsonl"
+
+            if not input_file.exists():
+                print(f"  [WARNING] Missing {input_file}")
+                continue
+
+            with input_file.open("r", encoding="utf-8") as infile:
+                for line in infile:
+                    line = line.strip()
+
+                    if not line:
+                        continue
+
+                    record = json.loads(line)
+
+                    record["experiment"] = experiment_name
+                    record["batch"] = batch_dir.name
+
+                    outfile.write(json.dumps(record) + "\n")
+                    total_validated_results += 1
 
     # Combine attack_history.csv
     total_history_rows = 0
@@ -88,8 +113,6 @@ def combine_experiment(experiment_dir: Path):
                 if writer is None:
                     extra_fields = [
                         "experiment",
-                        "control_point_spacing",
-                        "epsilon",
                         "batch",
                     ]
 
@@ -115,8 +138,10 @@ def combine_experiment(experiment_dir: Path):
                     total_history_rows += 1
 
     print(f"  Results: {total_results}")
+    print(f"  Validated results: {total_validated_results}")
     print(f"  History rows: {total_history_rows}")
     print(f"  Saved: {output_jsonl.name}")
+    print(f"  Saved: {output_validated_jsonl.name}")
     print(f"  Saved: {output_csv.name}")
 
 
