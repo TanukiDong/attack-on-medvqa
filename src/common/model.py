@@ -27,15 +27,19 @@ QUESTION_TEMPLATE = """
 def load_model(model_config):
     """Load the model and processor"""
     model_path = model_config["path"]
-    hf_cache = model_config.get("hf_cache")
-    dtype = torch.bfloat16
 
+    # HuggingFace cache (HPC override with env var)
+    yaml_hf_cache = model_config.get("hf_cache")
+    env_hf_cache = os.environ.get("HF_HOME")
+    hf_cache = env_hf_cache if env_hf_cache else yaml_hf_cache
     if hf_cache:
         os.environ["HF_HOME"] = str(hf_cache)
+    print(f"Hugging Face cache: {hf_cache}")
 
     if not torch.cuda.is_available():
         raise RuntimeError("CUDA is unavailable. Submit this script to a GPU node.")
 
+    dtype = torch.bfloat16
     flash_attn_available = find_spec("flash_attn") is not None
     attn_implementation = "flash_attention_2" if flash_attn_available else "sdpa"
 

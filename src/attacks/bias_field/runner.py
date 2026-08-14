@@ -48,7 +48,7 @@ def run_bias_field_attack(config_path, start_index=0, end_index=None, output_pat
 
     # Override default output path
     if output_path is not None:
-        output_directory = resolve_project_path(output_path, project_root) / experiment_name
+        output_directory = resolve_project_path(output_path, project_root)
     else:
         output_directory = project_root / "result" / "MedVLM-R1" / "bias_field_attack" / experiment_name
 
