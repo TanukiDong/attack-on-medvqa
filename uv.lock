@@ -202,7 +202,7 @@ wheels = [
 [[package]]
 name = "attack-on-medvqa"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "accelerate" },
     { name = "datasets" },
@@ -211,6 +211,7 @@ dependencies = [
     { name = "matplotlib" },
     { name = "notebook" },
     { name = "pyspark" },
+    { name = "pyyaml" },
     { name = "qwen-vl-utils" },
     { name = "seaborn" },
     { name = "simpleitk" },
@@ -229,6 +230,7 @@ requires-dist = [
     { name = "matplotlib", specifier = ">=3.10.8" },
     { name = "notebook", specifier = ">=7.5.0" },
     { name = "pyspark", specifier = ">=4.2.0" },
+    { name = "pyyaml", specifier = ">=6.0.3" },
     { name = "qwen-vl-utils", specifier = ">=0.0.14" },
     { name = "seaborn", specifier = ">=0.13.2" },
     { name = "simpleitk", specifier = ">=2.5.5" },
