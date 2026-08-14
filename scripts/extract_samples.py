@@ -298,7 +298,8 @@ def write_samples(
     question_path = output_root / "question.json"
     if overwrite:
         shutil.rmtree(images_root, ignore_errors=True)
-
+        
+    images_root.mkdir(parents=True, exist_ok=True)
     questions = []
     manifest = []
 
@@ -347,10 +348,11 @@ def main() -> None:
         help="Directory containing the local OmniMedVQA Arrow cache.",
     )
     parser.add_argument(
-        "--results", type=Path,
-        default=project_root / f"result/MedVLM-R1/extract_samples/clean_results_{args.modality}.csv",
-        help="Resumable clean MedVLM-R1 prediction CSV.",
-    )
+        "--results",
+        type=Path,
+        default=None,
+        help="Prediction CSV path. Defaults to a modality-specific path.",
+    ) 
     parser.add_argument(
         "--modality",
         choices=MODALITY_CHOICES,
@@ -361,19 +363,13 @@ def main() -> None:
         "--output-root",
         type=Path,
         default=None,
-        help=(
-            "Destination for images/ and question.json. By default, uses "
-            "data/OmniMedVQA/sample_<modality>."
-        ),
+        help="Destination for images/ and question.json. By default, uses data/OmniMedVQA/sample_<modality>.",
     )
     parser.add_argument(
         "--selection-results",
         type=Path,
         default=None,
-        help=(
-            "CSV manifest for the selected samples. By default, uses "
-            "result/MedVLM-R1/extract_samples/correct_samples_{args.modality}.csv."
-        ),
+        help="CSV manifest for the selected samples. By default, uses result/MedVLM-R1/extract_samples/correct_samples_{args.modality}.csv.",
     )
     parser.add_argument("--samples", type=int, default=20)
     parser.add_argument(
@@ -385,16 +381,30 @@ def main() -> None:
     args = parser.parse_args()
     if args.samples < 1:
         raise ValueError("--samples must be at least 1")
+    
+    if args.results is None:
+        args.results = (
+            project_root
+            / "result/MedVLM-R1/extract_samples"
+            / f"clean_results_{args.modality}.csv"
+        )
 
+    if args.output_root is None:
+        args.output_root = (
+            project_root
+            / "data/OmniMedVQA"
+            / f"sample_{args.modality}"
+        )
+
+    if args.selection_results is None:
+        args.selection_results = (
+            project_root
+            / "result/MedVLM-R1/extract_samples"
+            / f"correct_samples_{args.modality}.csv"
+        )
+    
     target_modality, target_subset = MODALITY_CHOICES[args.modality]
-    output_root = args.output_root or (
-        project_root / f"data/OmniMedVQA/sample_{args.modality}"
-    )
-    selection_results = args.selection_results or (
-        project_root
-        / f"result/MedVLM-R1/extract_samples/correct_samples_{args.modality}.csv"
-    )
-
+    
     predictions = read_predictions(args.results)
     selected = select_samples(
         args.data_root, predictions, target_modality, target_subset, args.samples
@@ -413,11 +423,11 @@ def main() -> None:
     )
     if len(selected) != args.samples:
         raise RuntimeError("Could not collect the requested number of correct samples.")
-    write_samples(selected, output_root, selection_results, args.overwrite)
+    write_samples(selected, args.output_root, args.selection_results, args.overwrite)
 
     print(f"{target_modality}: {len(selected)}")
     print(f"Predictions: {args.results}")
-    print(f"Questions: {output_root / 'question.json'}")
+    print(f"Questions: {args.output_root / 'question.json'}")
     print(f"Total runtime: {perf_counter() - total_start:.2f} seconds")
 
 
