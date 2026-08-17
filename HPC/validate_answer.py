@@ -7,6 +7,9 @@ from transformers import set_seed
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 QUESTION_PATH = PROJECT_ROOT / "data" / "OmniMedVQA" / "sample_mri" / "question.json"
 
+# Add src/ to path
+sys.path.insert(0, str(PROJECT_ROOT / "src"))
+
 from common.io import load_config, resolve_project_path
 from common.model import load_model
 from common.validate import validate_answers

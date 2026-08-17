@@ -4,10 +4,13 @@ Attack on MedVQA
 
 Running bias field attack
 ```bash
-# Running locally without environment activated
-uv run scripts/bias_field_attack.py --config configs/cps_8_eps_0p3.yaml --start-index 0 --end-index 10
-# Running locally with uv environment activated
-uv run --active scripts/bias_field_attack.py --config configs/tmp.yaml --start-index 0 --end-index 10 --output-path tmp
+# Running locally
+uv run scripts/bias_field_attack.py --config configs/cps_8_eps_0p3.yaml --start-index 0 --end-index 10 --output-path tmp --overwrite
+```
+
+Validate bias field attack results
+```bash
+uv run scripts/validate_answer.py --result-directory result/MedVLM-R1/bias_field_attack/cps_8_eps_0p1/batch_0/ --overwrite
 ```
 
 Combine results from batches
