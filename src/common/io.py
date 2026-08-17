@@ -39,6 +39,13 @@ def resolve_project_path(path, project_root):
 
     return Path(project_root) / path
 
+def get_batch_directories(experiment_directory):
+    """Get all batch directories containing attack_results.jsonl."""
+    return [
+        path.parent
+        for path in experiment_directory.glob("batch_*/attack_results.jsonl")
+    ]
+
 def load_config(config_path):
     """Load a YAML configuration file."""
     config_path = Path(config_path)

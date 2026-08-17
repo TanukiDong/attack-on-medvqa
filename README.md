@@ -10,7 +10,7 @@ uv run scripts/bias_field_attack.py --config configs/cps_8_eps_0p3.yaml --start-
 
 Validate bias field attack results
 ```bash
-uv run scripts/validate_answer.py --result-directory result/MedVLM-R1/bias_field_attack/cps_8_eps_0p1/batch_0/ --overwrite
+uv run scripts/validate_answer.py --config cps_8_eps_0p1 --overwrite
 ```
 
 Combine results from batches

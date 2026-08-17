@@ -30,10 +30,7 @@ def load_model(model_config):
 
     # HuggingFace cache (HPC override with env var)
     yaml_hf_cache = model_config.get("hf_cache")
-    env_hf_cache = os.environ.get("HF_HOME")
-    hf_cache = env_hf_cache if env_hf_cache else yaml_hf_cache
-    if hf_cache:
-        os.environ["HF_HOME"] = str(hf_cache)
+    hf_cache = os.environ.get("HF_HOME", yaml_hf_cache)
     print(f"Hugging Face cache: {hf_cache}")
 
     if not torch.cuda.is_available():
