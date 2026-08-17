@@ -14,7 +14,7 @@ export HF_HOME=/mnt/parscratch/users/acp25tw/huggingface_cache
 
 cd "$HOME/dissertation/attack-on-medvqa"
 
-source env.sh
+source gpu_env.sh
 
 MODALITY="$1"
 SAMPLES="${2:-1000}"
