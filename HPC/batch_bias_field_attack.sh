@@ -11,10 +11,6 @@ CONFIGS=(
     "configs/cps_16_eps_0p3.yaml"
     "configs/cps_16_eps_0p5.yaml"
 
-    "configs/cps_24_eps_0p1.yaml"
-    "configs/cps_24_eps_0p3.yaml"
-    "configs/cps_24_eps_0p5.yaml"
-
     "configs/cps_32_eps_0p1.yaml"
     "configs/cps_32_eps_0p3.yaml"
     "configs/cps_32_eps_0p5.yaml"
