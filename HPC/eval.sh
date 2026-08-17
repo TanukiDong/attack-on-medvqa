@@ -22,12 +22,12 @@ CONFIGS=(
     "cps_16_eps_0p1"
     "cps_16_eps_0p3"
     "cps_16_eps_0p5"
-    "cps_24_eps_0p1"
-    "cps_24_eps_0p3"
-    "cps_24_eps_0p5"
     "cps_32_eps_0p1"
     "cps_32_eps_0p3"
     "cps_32_eps_0p5"
+    "cps_64_eps_0p1"
+    "cps_64_eps_0p3"
+    "cps_64_eps_0p5"
 )
 
 CONFIG="${CONFIGS[$SLURM_ARRAY_TASK_ID]}"
