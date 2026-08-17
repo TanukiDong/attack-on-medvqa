@@ -4,25 +4,20 @@ import sys
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-SRC_ROOT = PROJECT_ROOT / "src"
 
-if str(SRC_ROOT) not in sys.path:
-    sys.path.insert(0, str(SRC_ROOT))
-
-os.environ["HF_HOME"] = "/mnt/parscratch/users/acp25tw/huggingface_cache"
-
+# Add src/ to path
+sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from attacks.bias_field.runner import run_bias_field_attack
-
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Bias Field Attack on HPC.")
 
     parser.add_argument(
         "--config",
-        type=Path,
+        type=str,
         required=True,
-        help="Path to the YAML experiment configuration.",
+        help="Experiment config name, e.g. 'cps_8_eps_0p3'",
     )
 
     parser.add_argument(
@@ -79,19 +74,21 @@ def main():
     if batch_id_string is not None:
         # Running as a Slurm array task
         batch_id = int(batch_id_string)
-
         start_index = batch_id * args.batch_size
         end_index = start_index + args.batch_size
 
     else:
         # Running directly
         batch_id = None
-
         start_index = args.start_index
         end_index = args.end_index
 
-    experiment_name = args.config.stem
+    experiment_name = args.config
+    config_path = PROJECT_ROOT / "configs" / f"{experiment_name}.yaml"
+    if not config_path.exists():
+        raise FileNotFoundError(f"Config not found: {config_path}")
 
+    # Override output path
     if args.output_path is not None:
         output_path = args.output_path
 
@@ -101,13 +98,15 @@ def main():
     else:
         output_path = PROJECT_ROOT / "result" / "MedVLM-R1" / "bias_field_attack"
 
+    # Batch output path
     if batch_id is not None:
         output_path = output_path / experiment_name / f"batch_{batch_id}"
+    # Single run output path
     else:
         output_path = output_path / experiment_name
 
     run_bias_field_attack(
-        config_path=args.config,
+        config_path=config_path,
         start_index=start_index,
         end_index=end_index,
         output_path=output_path,

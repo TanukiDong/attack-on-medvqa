@@ -11,6 +11,8 @@
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=twanavit1@sheffield.ac.uk
 
+export HF_HOME=/mnt/parscratch/users/acp25tw/huggingface_cache
+
 cd "$HOME/dissertation/attack-on-medvqa"
 
 source gpu_env.sh

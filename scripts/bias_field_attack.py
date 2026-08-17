@@ -8,9 +8,9 @@ def parse_args():
 
     parser.add_argument(
         "--config",
-        type=Path,
+        type=str,
         required=True,
-        help="Path to the YAML experiment configuration.",
+        help="Experiment config name, e.g. 'cps_8_eps_0p3'",
     )
 
     parser.add_argument(

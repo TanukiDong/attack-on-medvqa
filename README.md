@@ -4,13 +4,20 @@ Attack on MedVQA
 
 Running bias field attack
 ```bash
-# Running locally
-uv run scripts/bias_field_attack.py --config configs/cps_8_eps_0p3.yaml --start-index 0 --end-index 10 --output-path tmp --overwrite
+# Local
+uv run scripts/bias_field_attack.py --config cps_8_eps_0p3 --start-index 0 --end-index 10 --output-path tmp --overwrite
+
+# HPC
+bash HPC/batch_bias_field_attack.sh
 ```
 
 Validate bias field attack results
 ```bash
+# Local
 uv run scripts/validate_answer.py --config cps_8_eps_0p1 --overwrite
+
+# HPC
+bash HPC/batch_validate_answer.sh
 ```
 
 Combine results from batches
