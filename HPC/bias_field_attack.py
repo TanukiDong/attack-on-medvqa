@@ -68,18 +68,18 @@ def parse_args():
 def main():
     args = parse_args()
 
-    task_id_string = os.environ.get("SLURM_ARRAY_TASK_ID")
+    batch_id_string = os.environ.get("SLURM_ARRAY_TASK_ID")
 
-    if task_id_string is not None:
+    if batch_id_string is not None:
         # Running as a Slurm array task
-        task_id = int(task_id_string)
+        batch_id = int(batch_id_string)
 
-        start_index = task_id * args.batch_size
+        start_index = batch_id * args.batch_size
         end_index = start_index + args.batch_size
 
     else:
         # Running directly
-        task_id = None
+        batch_id = None
 
         start_index = args.start_index
         end_index = args.end_index
@@ -95,8 +95,8 @@ def main():
     else:
         output_path = PROJECT_ROOT / "result" / "MedVLM-R1" / "bias_field_attack"
 
-    if task_id is not None:
-        output_path = output_path / experiment_name / f"batch_{task_id}"
+    if batch_id is not None:
+        output_path = output_path / experiment_name / f"batch_{batch_id}"
     else:
         output_path = output_path / experiment_name
 
