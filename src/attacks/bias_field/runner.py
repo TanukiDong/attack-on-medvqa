@@ -15,7 +15,7 @@ from common.io import (
     append_jsonl,
     get_output_paths,
     initialize_output,
-    load_completed_ids,
+    load_samples,
     relative_to_project,
     resolve_project_path,
     load_config,
@@ -26,8 +26,13 @@ from common.model import (
     run_model,
 )
 
-def run_bias_field_attack(config_path, start_index=0, end_index=None, output_path=None):
-    
+def run_bias_field_attack(
+    config_path,
+    start_index=0,
+    end_index=None,
+    output_path=None,
+    overwrite=False):
+        
     # Path
     project_root = find_project_root()
     sample_root = project_root / "data" / "OmniMedVQA" / "sample_mri"
@@ -42,7 +47,6 @@ def run_bias_field_attack(config_path, start_index=0, end_index=None, output_pat
     bias_config = config["bias_field"]
 
     verbose = experiment_config.get("verbose", 1)
-    overwrite = experiment_config.get("overwrite", False)
 
     experiment_name = config_path.stem
 
@@ -59,22 +63,13 @@ def run_bias_field_attack(config_path, start_index=0, end_index=None, output_pat
     )
 
     # Load samples
-    with question_path.open(encoding="utf-8") as file:
-        all_samples = json.load(file)
-
-    all_mri_samples = [sample for sample in all_samples if sample.get("modality") == "MRI"]
-    completed_question_ids = load_completed_ids(output_paths["result_path"], overwrite=overwrite)
-    selected_mri_samples = all_mri_samples[start_index:end_index]
-
-    mri_samples = [
-        sample
-        for sample in selected_mri_samples
-        if str(sample["id"]) not in completed_question_ids]
-
-    print(
-        f"Loaded {len(all_mri_samples)} MRI samples, "
-        f"selected indices [{start_index}:{end_index}], "
-        f"{len(mri_samples)} samples remaining to be processed."
+    mri_samples = load_samples(
+        question_path=question_path,
+        result_path=output_paths["result_path"],
+        modality="MRI",
+        start_index=start_index,
+        end_index=end_index,
+        overwrite=overwrite
     )
 
     # Device
@@ -98,7 +93,7 @@ def run_bias_field_attack(config_path, start_index=0, end_index=None, output_pat
         torch.cuda.synchronize()
         sample_start = perf_counter()
 
-        question_id = str(sample["id"])
+        question_id = sample["id"]
         image_path = sample_root / sample["image"][0]
 
         image = load_image_tensor(image_path)

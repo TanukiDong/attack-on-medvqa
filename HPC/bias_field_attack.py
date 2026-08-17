@@ -52,6 +52,12 @@ def parse_args():
         default=None,
         help="Override the experiment output directory.",
     )
+    
+    parser.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="Overwrite existing results.",
+    )
 
     args = parser.parse_args()
     
@@ -105,6 +111,7 @@ def main():
         start_index=start_index,
         end_index=end_index,
         output_path=output_path,
+        overwrite=args.overwrite
     )
 
 

@@ -1,7 +1,6 @@
 experiment:
   seed: 42
   verbose: 1
-  overwrite: false
 
 model:
   path: JZPeterPan/MedVLM-R1

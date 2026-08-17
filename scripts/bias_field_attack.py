@@ -34,6 +34,12 @@ def parse_args():
         help="Override output directory. Default is result/MedVLM-R1/bias_field_attack/<experiment_name>.",
     )
 
+    parser.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="Overwrite existing results.",
+    )
+    
     args = parser.parse_args()
 
     if args.start_index < 0:
@@ -46,14 +52,14 @@ def parse_args():
 
 def main():
     args = parse_args()
-
+    
     run_bias_field_attack(
         config_path=args.config,
         start_index=args.start_index,
         end_index=args.end_index,
         output_path=args.output_path,
+        overwrite=args.overwrite,
     )
-
 
 if __name__ == "__main__":
     main()

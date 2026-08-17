@@ -60,10 +60,37 @@ def load_completed_ids(result_path, overwrite=False):
 
     with result_path.open(encoding="utf-8") as file:
         return {
-            str(json.loads(line)["question_id"])
+            json.loads(line)["question_id"]
             for line in file
             if line.strip()
         }
+
+def load_samples(question_path, result_path, modality=None, start_index=0, end_index=None, overwrite=False, verbose=1):
+    """Load unprocessed samples."""
+
+    with question_path.open(encoding="utf-8") as file:
+        all_samples = json.load(file)
+
+    if modality is not None:
+        samples = [sample for sample in all_samples if sample.get("modality") == modality]
+    else:
+        samples = all_samples
+
+    selected_samples = samples[start_index:end_index]
+
+    completed_question_ids = load_completed_ids(result_path, overwrite=overwrite)
+
+    remaining_samples = [sample for sample in selected_samples if str(sample["id"]) not in completed_question_ids]
+
+    if verbose:
+        print(
+            f"Loaded {len(samples)} {modality or 'total'} samples, "
+            f"selected indices [{start_index}:{end_index}], "
+            f"{len(remaining_samples)} samples remaining to be processed."
+        )
+
+    return remaining_samples
+
 
 def initialize_output(output_directory, config_path, overwrite=False):
     """Initialize output directories and files for the attack."""
@@ -71,6 +98,7 @@ def initialize_output(output_directory, config_path, overwrite=False):
 
     if overwrite:
         shutil.rmtree(output_directory, ignore_errors=True)
+        print(f"Overwrite: Removed {output_directory}")
 
     attacked_image_directory = output_directory / "attacked_images"
     bias_field_directory = output_directory / "bias_fields"
