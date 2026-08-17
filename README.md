@@ -1,6 +1,14 @@
 # attack-on-medvqa
 Attack on MedVQA
 
+Extract samples
+```bash
+# Local
+TBA
+
+# HPC
+bash HPC/batch_extract_samples.sh
+```
 
 Running bias field attack
 ```bash
