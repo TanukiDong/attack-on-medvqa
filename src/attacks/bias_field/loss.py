@@ -46,16 +46,21 @@ def compute_loss(selected_logits, selected_labels, target, answer_token_ids, att
     loss_scope = attack_config["loss_scope"]
 
     if loss_type == "cross_entropy":
-        if loss_scope in {"vocab_answer", "full_output"}:
+        if loss_scope == "vocab_answer":
             loss = F.cross_entropy(
                 input=selected_logits.float(),
                 target=selected_labels,
             )
-        elif loss_scope == "choice_answer":
+        elif loss_scope in {"choice_answer", "conditioned_answer"}:
             loss = choice_ce_loss(
                 logits=selected_logits,
                 target=target,
                 answer_token_ids=answer_token_ids,
+            )
+        elif loss_scope == "full_output":
+            loss = F.cross_entropy(
+                input=selected_logits.float(),
+                target=selected_labels,
             )
         else:
             raise ValueError(
@@ -88,7 +93,7 @@ def compute_loss(selected_logits, selected_labels, target, answer_token_ids, att
     if not loss.requires_grad:
         raise RuntimeError("The loss has no gradient.")
 
-    if loss_scope == "choice_answer":
+    if loss_scope in {"choice_answer", "conditioned_answer"}:
         choice_probs = get_choice_probs(selected_logits, answer_token_ids)
     else:
         choice_probs = None

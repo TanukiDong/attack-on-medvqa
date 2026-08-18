@@ -118,6 +118,37 @@ def attack_bf(
         # Clamp image into [0, 1]
         adversarial_image = clamp_ste(image * bias_field, 0, 1)
 
+        evaluate_step = (step + 1) % eval_step == 0 or step == num_steps - 1
+        
+        if evaluate_step:
+            # Run model
+            intermediate_output = run_model(
+                question=problem,
+                image=adversarial_image.detach(),
+                model=model,
+                processor=processor,
+                generation_config=generation_config,
+                device=device,
+            )
+            
+            intermediate_answer = extract_answer(intermediate_output, tag="answer")
+            
+            if loss_scope == "conditioned_answer":
+                inputs, labels = build_attack_input(
+                    tensor_image=adversarial_image.detach(),
+                    problem=problem,
+                    target=target,
+                    processor=processor,
+                    answer_token_ids=answer_token_ids,
+                    reference_output=intermediate_output,
+                    loss_scope=loss_scope,
+                    device=device,
+                    verbose=verbose,
+                )
+
+            valid_answer = intermediate_answer in VALID_ANSWERS
+            attack_success = valid_answer and intermediate_answer != target 
+
         # Select logits and labels based on the loss scope
         selected_logits, selected_labels = get_selected_logits(
             image=adversarial_image,
@@ -149,32 +180,17 @@ def attack_bf(
         history_entry = {
             "step": step + 1,
             "loss": loss_value,
-            "predicted_answer": None,
-            "attack_success": None,
-            "evaluated": False,
+            "predicted_answer": intermediate_answer if evaluate_step else None,
+            "attack_success": attack_success if evaluate_step else None,
+            "evaluated": evaluate_step,
         }
-
-        if (step + 1) % eval_step == 0 or step == num_steps - 1:
+        if choice_probs is not None:
+            history_entry["choice_probs"] = {
+                letter: probability.detach().cpu().item()
+                for letter, probability in zip(VALID_ANSWERS, choice_probs)
+            }
             
-            # Run model
-            intermediate_output = run_model(
-                question=problem,
-                image=adversarial_image.detach(),
-                model=model,
-                processor=processor,
-                generation_config=generation_config,
-                device=device,
-            )
-            
-            intermediate_answer = extract_answer(intermediate_output, tag="answer")
-
-            valid_answer = intermediate_answer in VALID_ANSWERS
-            attack_success = valid_answer and intermediate_answer != target
-
-            history_entry["predicted_answer"] = intermediate_answer
-            history_entry["attack_success"] = attack_success
-            history_entry["evaluated"] = True
-            
+        if evaluate_step:
             # Criteria 1 : No best candidate yet
             # Criteria 2 : Success when no success yet
             # Criteria 3 : No success yet → Higher loss is better
@@ -228,18 +244,17 @@ def attack_bf(
                 print(repr(intermediate_output))
 
                 if choice_probs is not None:
-                    print("Answer probabilities:")
+                    if loss_scope == "conditioned_answer":
+                        print("Conditioned choice probabilities:")
+                    else:
+                        print("Choice probabilities:")
                     for letter, probability in zip(VALID_ANSWERS, choice_probs):
                         print(f"  {letter}: {probability.item() * 100:.2f}%")
 
-        if choice_probs is not None:
-            history_entry["answer_probabilities"] = {
-                letter: probability.detach().cpu().item()
-                for letter, probability in zip(VALID_ANSWERS, choice_probs)
-            }
 
         history.append(history_entry)
 
+        # Early stopping
         if early_stopping and patience_counter is not None and patience_counter <= 0:
             if verbose:
                 print(f"Early stopping triggered at step {step + 1} after not improving for {patience} steps.")

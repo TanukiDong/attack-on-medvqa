@@ -153,7 +153,7 @@ def append_attack_history(path, question_id, history):
         writer = csv.DictWriter(file, fieldnames=HISTORY_FIELDS)
 
         for entry in history:
-            probabilities = entry.get("answer_probabilities", {})
+            probabilities = entry.get("choice_probs", {})
 
             writer.writerow(
                 {
