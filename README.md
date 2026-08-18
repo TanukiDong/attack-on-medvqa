@@ -4,7 +4,7 @@ Attack on MedVQA
 Extract samples
 ```bash
 # Local
-TBA
+uv run scripts/extract_samples.py --modality mri --samples 10 --overwrite
 
 # HPC
 bash HPC/batch_extract_samples.sh
