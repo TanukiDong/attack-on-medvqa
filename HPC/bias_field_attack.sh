@@ -4,10 +4,10 @@
 #SBATCH --gres=gpu:1
 #SBATCH --qos=gpu
 #SBATCH --mem=64G
-#SBATCH --time=2:00:00
+#SBATCH --time=3:00:00
 #SBATCH --array=0-19
-#SBATCH --output=HPC/output/bias_field_attack_%A_%a.out
-#SBATCH --error=HPC/output/bias_field_attack_%A_%a.err
+#SBATCH --output="HPC/output/bias_field_attack_%x_%A_%a.out"
+#SBATCH --error="HPC/output/bias_field_attack_%x_%A_%a.err"
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=twanavit1@sheffield.ac.uk
 
