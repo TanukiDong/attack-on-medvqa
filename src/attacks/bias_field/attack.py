@@ -11,7 +11,6 @@ from common.model import (
     run_model,
 )
 
-
 def attack_bf(
     image,
     problem,
@@ -134,17 +133,21 @@ def attack_bf(
             intermediate_answer = extract_answer(intermediate_output, tag="answer")
             
             if loss_scope == "conditioned_answer":
-                inputs, labels = build_attack_input(
-                    tensor_image=adversarial_image.detach(),
-                    problem=problem,
-                    target=target,
-                    processor=processor,
-                    answer_token_ids=answer_token_ids,
-                    reference_output=intermediate_output,
-                    loss_scope=loss_scope,
-                    device=device,
-                    verbose=verbose,
-                )
+                try:
+                    inputs, labels = build_attack_input(
+                        tensor_image=adversarial_image.detach(),
+                        problem=problem,
+                        target=target,
+                        processor=processor,
+                        answer_token_ids=answer_token_ids,
+                        reference_output=intermediate_output,
+                        loss_scope=loss_scope,
+                        device=device,
+                        verbose=verbose,
+                    )
+                except RuntimeError as error:
+                    print(f"Error building attack input at step {step + 1}: {error}")
+                    print("Keeping previous reasoning")
 
             valid_answer = intermediate_answer in VALID_ANSWERS
             attack_success = valid_answer and intermediate_answer != target 
@@ -221,7 +224,7 @@ def attack_bf(
                 if attack_success:
                     patience_counter = patience
 
-                if verbose:
+                if verbose > 1:
                     print(f"New best candidate found at step {step + 1}")
 
             elif successful_candidate_found:
