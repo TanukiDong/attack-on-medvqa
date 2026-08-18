@@ -57,10 +57,11 @@ def load_model(model_config):
     processor = AutoProcessor.from_pretrained(model_path)
 
     generation_config = GenerationConfig(
-        max_new_tokens=model_config.get("max_new_tokens", 1024),
+        max_new_tokens=1024,
         do_sample=False,
+        temperature=1,
         num_return_sequences=1,
-        pad_token_id=model_config.get("pad_token_id", 151643),
+        pad_token_id=151643,
     )
 
     print("Model and processor loaded successfully.")
