@@ -72,7 +72,7 @@ def load_completed_ids(result_path, overwrite=False):
             if line.strip()
         }
 
-def load_samples(question_path, result_path, modality=None, start_index=0, end_index=None, overwrite=False, verbose=1):
+def load_samples(question_path, result_path=None, modality=None, start_index=0, end_index=None, overwrite=False, verbose=1):
     """Load unprocessed samples."""
 
     with question_path.open(encoding="utf-8") as file:
@@ -85,9 +85,11 @@ def load_samples(question_path, result_path, modality=None, start_index=0, end_i
 
     selected_samples = samples[start_index:end_index]
 
-    completed_question_ids = load_completed_ids(result_path, overwrite=overwrite)
-
-    remaining_samples = [sample for sample in selected_samples if str(sample["id"]) not in completed_question_ids]
+    if result_path is not None:
+        completed_question_ids = load_completed_ids(result_path, overwrite=overwrite)
+        remaining_samples = [sample for sample in selected_samples if str(sample["id"]) not in completed_question_ids]
+    else:
+        remaining_samples = selected_samples
 
     if verbose:
         print(

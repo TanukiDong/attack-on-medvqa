@@ -2,6 +2,7 @@ import torch
 
 from attacks.bias_field.bias_field import clamp_ste, generate_bias_field
 from attacks.bias_field.loss import compute_loss, get_choice_probs
+from attacks.bias_field.visualization import plot_bias_field_attack
 from common.eval import eval_image
 from common.model import (
     VALID_ANSWERS,
@@ -24,6 +25,8 @@ def attack_bf(
     bias_config,
     verbose=1,
     device="cuda",
+    debug=False,
+    debug_dir=None,
 ):
     num_steps = attack_config["num_steps"]
     learning_rate = attack_config["learning_rate"]
@@ -73,6 +76,21 @@ def attack_bf(
         control_points=None,
         verbose=verbose,
     )
+    
+    # Debug visualization
+    if debug:
+        initial_bias_field = clamp_ste(image * bias_field, 0, 1)
+        plot_bias_field_attack(
+            image=image.detach().cpu().float(),
+            bias_field=bias_field.detach().cpu().float(),
+            biased_image=initial_bias_field.detach().cpu().float(),
+            epsilon=bias_config["epsilon"],
+            step=0,
+            loss=None,
+            predicted_answer=None,
+            attack_success=None,
+            debug_dir=debug_dir,
+        )
 
     # Adam optimizer
     optimizer = torch.optim.Adam([control_points], lr=learning_rate)
@@ -89,12 +107,12 @@ def attack_bf(
                 processor=processor,
                 device=device,
             )
+
             clean_probs = get_choice_probs(
                 clean_logits,
                 answer_token_ids,
             ).detach()
             
-    
     history = []
     best_candidate = None
     patience_counter = None
@@ -194,6 +212,21 @@ def attack_bf(
             }
             
         if evaluate_step:
+            
+            # Debug visualization
+            if debug:
+                plot_bias_field_attack(
+                    image=image.detach().cpu().float(),
+                    bias_field=bias_field.detach().cpu().float(),
+                    biased_image=adversarial_image.detach().cpu().float(),
+                    epsilon=bias_config["epsilon"],
+                    step=step + 1,
+                    loss=loss_value,
+                    predicted_answer=intermediate_answer,
+                    attack_success=attack_success,
+                    debug_dir=debug_dir,
+                )
+                
             # Criteria 1 : No best candidate yet
             # Criteria 2 : Success when no success yet
             # Criteria 3 : No success yet → Higher loss is better
