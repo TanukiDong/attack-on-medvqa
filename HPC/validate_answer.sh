@@ -16,18 +16,32 @@ cd "$HOME/dissertation/attack-on-medvqa"
 
 source gpu_env.sh
 
-CONFIG="$1"
+CONFIG="${1:-}"
+MODALITY="${2:-}"
+
+if [[ -z "$CONFIG" ]]; then
+    echo "ERROR: CONFIG is not set"
+    exit 1
+fi
+
+if [[ -z "$MODALITY" ]]; then
+    echo "ERROR: MODALITY is not set"
+    exit 1
+fi
 
 echo "============================================================"
+echo "Config: $CONFIG"
+echo "Modality: $MODALITY"
 echo "Job ID: ${SLURM_JOB_ID:-N/A}"
 echo "Node: $(hostname)"
 echo "Started: $(date)"
 echo "Working directory: $(pwd)"
-echo "Configuration: ${CONFIG}"
 python --version
 echo "============================================================"
 
-python HPC/validate_answer.py --config "$CONFIG"
+python HPC/validate_answer.py \
+    --config "$CONFIG" \
+    --modality "$MODALITY"
 
 echo "============================================================"
 echo "Completed: $(date)"

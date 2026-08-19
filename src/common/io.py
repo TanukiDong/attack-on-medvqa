@@ -72,6 +72,27 @@ def load_completed_ids(result_path, overwrite=False):
             if line.strip()
         }
 
+def problems_by_id_map(question_path):
+    """Create a mapping from question IDs to problems."""
+    with Path(question_path).open(encoding="utf-8") as file:
+        all_samples = json.load(file)
+
+    return {sample["id"]: sample["problem"] for sample in all_samples}
+
+def load_validation_data(modality, validated_results_path, overwrite=False):
+    """Load validation data from validation JSONL file."""
+    project_root = find_project_root()
+    question_path = project_root / "data" / "OmniMedVQA" / f"sample_{modality}" / "question.json"
+    
+    problems_by_id = problems_by_id_map(question_path=question_path)
+    
+    completed_ids = load_completed_ids(
+        result_path=validated_results_path,
+        overwrite=overwrite,
+    )
+    
+    return problems_by_id, completed_ids
+
 def load_samples(question_path, result_path=None, modality=None, start_index=0, end_index=None, overwrite=False, verbose=1):
     """Load unprocessed samples."""
 

@@ -1,18 +1,24 @@
 import json
-import re
 from time import perf_counter
 
-from common.io import append_jsonl, load_samples
+import torch
+
+from common.io import (
+    append_jsonl,
+    find_project_root,
+    load_validation_data,
+    resolve_project_path,
+)
 from common.model import (
     VALID_ANSWERS,
     extract_answer,
     run_model,
 )
-
+from common.preprocess import load_image_tensor
 
 def validate_answers(
-    question_path,
     result_directory,
+    modality,
     model,
     processor,
     generation_config,
@@ -20,30 +26,27 @@ def validate_answers(
     verbose=1,
 ):
     start_time = perf_counter()
-
+    
     total_evaluated = 0
     total_successful = 0
     total_failed = 0
+    total_skipped = 0
     
+    project_root = find_project_root()
     attack_results_path = result_directory / "attack_results.jsonl"
     validated_results_path = result_directory / "validated_attack_results.jsonl"
+    
     if overwrite:
         validated_results_path.unlink(missing_ok=True)
         print(f"Overwrite: Removed {validated_results_path}")
     
-    start_index, end_index = get_batch_range(result_directory)
-    
-    # Load samples (for the problem text)
-    samples = load_samples(
-        question_path=question_path,
-        result_path=validated_results_path,
-        start_index=start_index,
-        end_index=end_index,
-        overwrite=False,
-        verbose=0
+    # Load validation data
+    problems_by_id, completed_ids = load_validation_data(
+        modality=modality,
+        validated_results_path=validated_results_path,
+        overwrite=overwrite,
     )
-    problems_by_id = {sample["id"]: sample["problem"] for sample in samples}
-    
+
     # Load attack results
     with attack_results_path.open(encoding="utf-8") as file:
         attack_results = [json.loads(line) for line in file if line.strip()]
@@ -52,15 +55,39 @@ def validate_answers(
     for result in attack_results:
         question_id = result["question_id"]
         problem = problems_by_id.get(question_id)
+    
         # Skip processed samples
-        if problem is None:
+        if question_id in completed_ids:
+            total_skipped += 1
             continue
+        
+        # Skip unsuccessful attacks
+        if not result.get("attack_success", False):
+            validation_result = {
+                **result,
+                "validated": False,
+                "validated_answer": None,
+                "validated_attack_success": None,
+            }
+
+            append_jsonl(validated_results_path, validation_result)
+            total_skipped += 1
+            continue
+        
         correct_answer = result["correct_answer"]
-        attacked_image_path = result["attacked_image_path"]
+        
+        # Path
+        original_image_path = resolve_project_path(result["original_image_path"], project_root)
+        bias_field_path = resolve_project_path(result["bias_field_path"], project_root)
+        
+        # Create adversarial 
+        image = load_image_tensor(original_image_path)
+        bias_field = torch.load(bias_field_path, map_location=image.device,).float()
+        adversarial_image = torch.clamp(image * bias_field, min=0, max=1)
 
         model_output = run_model(
             question=problem,
-            image=attacked_image_path,
+            image=adversarial_image,
             model=model,
             processor=processor,
             generation_config=generation_config,
@@ -82,14 +109,12 @@ def validate_answers(
 
         validation_result = {
             **result,
+            "validated": True,
             "validated_answer": validated_answer,
             "validated_attack_success": validated_attack_success,
         }
 
-        append_jsonl(
-            validated_results_path,
-            validation_result,
-        )
+        append_jsonl(validated_results_path, validation_result)
 
         if verbose:
             print(f"ID: {question_id}")
@@ -122,25 +147,10 @@ def validate_answers(
             print(f"Evaluated:          {total_evaluated}")
             print(f"Successful attacks: {total_successful}")
             print(f"Failed attacks:     {total_failed}")
+            print(f"Skipped:            {total_skipped}")
             print(f"Attack success rate: {attack_success_rate:.2%}")
             print(f"Total evaluation time: {total_time:.2f}s ({total_time / 60:.2f}m)")
         else:
             print("No samples were evaluated.")
 
     return summary
-
-
-def get_batch_range(result_directory, batch_size=50):
-    """Derive dataset index range from a batch_N directory name."""
-
-    match = re.fullmatch(r"batch_(\d+)", result_directory.name)
-
-    if match is None:
-        raise ValueError(f"Expected result directory named 'batch_N', but got: {result_directory.name}")
-
-    batch_index = int(match.group(1))
-
-    start_index = batch_index * batch_size
-    end_index = start_index + batch_size
-
-    return start_index, end_index
