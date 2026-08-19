@@ -71,7 +71,18 @@ def load_model(model_config):
 def extract_answer(output_text, tag="answer"):
     """Extract answer letter from the <answer> tags """
     match = re.search(rf"<{tag}>\s*(.*?)\s*</{tag}>", output_text, re.DOTALL | re.IGNORECASE)
-    return match.group(1).strip() if match else None
+    if match:
+        return match.group(1).strip()
+    
+    # Fallback for incomplete <think> tag
+    if tag == "think":
+        match = re.search(rf"<{tag}>\s*(.*)", output_text, re.DOTALL | re.IGNORECASE)
+        if match:
+            text = match.group(1).strip()
+            sentences = [s.strip() for s in text.split(".") if s.strip()]
+            if sentences:
+                return ". ".join(sentences[:3]) + "."
+    return None
 
 
 def build_message(question, image_source):
@@ -119,7 +130,7 @@ def build_attack_input(tensor_image, problem, target, processor, answer_token_id
         # target_text = reference_output.strip()
         thought = extract_answer(reference_output, tag="think")
         if not thought:
-            raise RuntimeError(f"Invalid <think>...</think> block in model output : {reference_output}.")
+            raise RuntimeError(f"Invalid reasoning in model output : {reference_output}.")
         target_text = f"<think>{thought}</think>\n<answer>{target}</answer>"
         
     elif loss_scope in {"full_output"}:
