@@ -17,16 +17,18 @@ cd "$HOME/dissertation/attack-on-medvqa"
 
 source gpu_env.sh
 
-if [[ -z "${CONFIG:-}" ]]; then
+CONFIG="${1:-}"
+MODALITY="${2:-}"
+
+if [[ -z "$CONFIG" ]]; then
     echo "ERROR: CONFIG is not set"
     exit 1
 fi
 
-if [[ -z "${MODALITY:-}" ]]; then
+if [[ -z "$MODALITY" ]]; then
     echo "ERROR: MODALITY is not set"
     exit 1
 fi
-
 echo "============================================================"
 echo "Config: $CONFIG"
 echo "Modality: $MODALITY"
