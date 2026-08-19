@@ -21,6 +21,14 @@ def parse_args():
     )
 
     parser.add_argument(
+        "--modality",
+        type=str,
+        required=True,
+        choices=["mri", "ct", "us"],
+        help="Medical imaging modality to attack.",
+    )
+    
+    parser.add_argument(
         "--start-index",
         type=int,
         default=0,
@@ -45,7 +53,7 @@ def parse_args():
         "--output-path",
         type=Path,
         default=None,
-        help="Override the experiment output directory.",
+        help="Override output directory. Default is result/MedVLM-R1/bias_field_attack/<modality>/<experiment_name>.",
     )
     
     parser.add_argument(
@@ -87,29 +95,16 @@ def main():
     config_path = PROJECT_ROOT / "configs" / f"{experiment_name}.yaml"
     if not config_path.exists():
         raise FileNotFoundError(f"Config not found: {config_path}")
-
-    # Override output path
-    if args.output_path is not None:
-        output_path = args.output_path
-
-        if not output_path.is_absolute():
-            output_path = PROJECT_ROOT / output_path 
-
-    else:
-        output_path = PROJECT_ROOT / "result" / "MedVLM-R1" / "bias_field_attack"
-
-    # Batch output path
-    if batch_id is not None:
-        output_path = output_path / experiment_name / f"batch_{batch_id}"
-    # Single run output path
-    else:
-        output_path = output_path / experiment_name
+  
+    output_subpath = f"batch_{batch_id}" if batch_id is not None else None
 
     run_bias_field_attack(
         config_path=config_path,
+        modality=args.modality,
         start_index=start_index,
         end_index=end_index,
-        output_path=output_path,
+        output_path=args.output_path,
+        output_subpath=output_subpath,
         overwrite=args.overwrite
     )
 

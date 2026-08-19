@@ -2,6 +2,12 @@
 
 cd "$HOME/dissertation/attack-on-medvqa"
 
+MODALITIES=(
+    "mri"
+    "ct"
+    "us"
+)
+
 CONFIGS=(
     "cps_8_eps_0p1"
     "cps_8_eps_0p3"
@@ -18,14 +24,25 @@ CONFIGS=(
     "cps_64_eps_0p1"
     "cps_64_eps_0p3"
     "cps_64_eps_0p5"
+
+    "cps_128_eps_0p1"
+    "cps_128_eps_0p3"
+    "cps_128_eps_0p5"
+
+    "cps_256_eps_0p1"
+    "cps_256_eps_0p3"
+    "cps_256_eps_0p5"
 )
 
-for config in "${CONFIGS[@]}"
+for modality in "${MODALITIES[@]}"
 do
-    echo "Submitting $config"
+    for config in "${CONFIGS[@]}"
+    do
+        echo "Submitting $modality $config"
 
-    sbatch \
-        --job-name="$config" \
-        --export=CONFIG="$config" \
-        HPC/bias_field_attack.sh
+        sbatch \
+            --job-name="${modality}_${config}" \
+            --export=CONFIG="$config",MODALITY="$modality" \
+            HPC/bias_field_attack.sh
+    done
 done

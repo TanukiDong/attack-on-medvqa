@@ -13,7 +13,7 @@ bash HPC/batch_extract_samples.sh
 Running bias field attack
 ```bash
 # Local
-uv run scripts/bias_field_attack.py --config cps_8_eps_0p3 --start-index 0 --end-index 10 --output-path tmp --overwrite
+uv run scripts/bias_field_attack.py --config cps_8_eps_0p3 --modality mri --start-index 0 --end-index 10 --output-path tmp --overwrite
 
 # HPC
 bash HPC/batch_bias_field_attack.sh

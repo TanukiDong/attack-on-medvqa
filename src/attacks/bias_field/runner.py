@@ -1,4 +1,3 @@
-import json
 import sys
 from time import perf_counter
 
@@ -8,7 +7,7 @@ from tqdm.auto import tqdm
 from transformers import set_seed
 
 from attacks.bias_field.attack import attack_bf
-from common.preprocess import load_image_tensor, tensor_to_pil
+from common.preprocess import MODALITY, load_image_tensor, tensor_to_pil
 from common.io import (
     find_project_root,
     append_attack_history,
@@ -28,14 +27,16 @@ from common.model import (
 
 def run_bias_field_attack(
     config_path,
+    modality,
     start_index=0,
     end_index=None,
     output_path=None,
+    output_subpath=None,
     overwrite=False):
         
     # Path
     project_root = find_project_root()
-    sample_root = project_root / "data" / "OmniMedVQA" / "sample_mri"
+    sample_root = project_root / "data" / "OmniMedVQA" / f"sample_{modality}"
     question_path = sample_root / "question.json"
     
     config_path = resolve_project_path(config_path, project_root)
@@ -54,7 +55,13 @@ def run_bias_field_attack(
     if output_path is not None:
         output_directory = resolve_project_path(output_path, project_root)
     else:
-        output_directory = project_root / "result" / "MedVLM-R1" / "bias_field_attack" / experiment_name
+        output_directory = project_root / "result" / "MedVLM-R1" / "bias_field_attack"
+        
+    output_directory = output_directory / modality / experiment_name
+    
+    # Bacth output for HPC
+    if output_subpath is not None:
+        output_directory = output_directory / output_subpath
 
     output_paths = initialize_output(
         output_directory=output_directory,
@@ -63,10 +70,10 @@ def run_bias_field_attack(
     )
 
     # Load samples
-    mri_samples = load_samples(
+    samples = load_samples(
         question_path=question_path,
         result_path=output_paths["result_path"],
-        modality="MRI",
+        modality=MODALITY[modality],
         start_index=start_index,
         end_index=end_index,
         overwrite=overwrite
@@ -88,7 +95,7 @@ def run_bias_field_attack(
     torch.cuda.synchronize()
     total_start = perf_counter()
 
-    for sample_index, sample in enumerate(tqdm(mri_samples, desc="MRI VQA tasks", disable=not sys.stdout.isatty())):
+    for sample_index, sample in enumerate(tqdm(samples, desc=f"{modality.upper()} VQA tasks", disable=not sys.stdout.isatty())):
 
         torch.cuda.synchronize()
         sample_start = perf_counter()
@@ -101,7 +108,7 @@ def run_bias_field_attack(
         solution = sample["solution"]
 
         if verbose:
-            print(f"\nProcessing sample {sample_index + 1}/{len(mri_samples)}: ID={question_id}")
+            print(f"\nProcessing sample {sample_index + 1}/{len(samples)}: ID={question_id}")
 
         # Clean inference
         clean_output = run_model(
@@ -175,7 +182,7 @@ def run_bias_field_attack(
         torch.cuda.synchronize()
         sample_time = perf_counter() - sample_start
 
-        print(f"Saved results for ID:{question_id} | {sample_index + 1}/{len(mri_samples)} | Time: {sample_time:.2f}s ({sample_time / 60:.2f}m)")
+        print(f"Saved results for ID:{question_id} | {sample_index + 1}/{len(samples)} | Time: {sample_time:.2f}s ({sample_time / 60:.2f}m)")
 
 
     torch.cuda.synchronize()

@@ -2,6 +2,9 @@ import argparse
 from pathlib import Path
 
 from attacks.bias_field.runner import run_bias_field_attack
+from common.io import find_project_root
+
+PROJECT_ROOT = find_project_root()
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Bias Field Attack.")
@@ -11,6 +14,14 @@ def parse_args():
         type=str,
         required=True,
         help="Experiment config name, e.g. 'cps_8_eps_0p3'",
+    )
+
+    parser.add_argument(
+        "--modality",
+        type=str,
+        required=True,
+        choices=["mri", "ct", "us"],
+        help="Medical imaging modality to attack.",
     )
 
     parser.add_argument(
@@ -31,7 +42,7 @@ def parse_args():
         "--output-path",
         type=Path,
         default=None,
-        help="Override output directory. Default is result/MedVLM-R1/bias_field_attack/<experiment_name>.",
+        help="Override output directory. Default is result/MedVLM-R1/bias_field_attack/<modality>/<experiment_name>.",
     )
 
     parser.add_argument(
@@ -53,8 +64,14 @@ def parse_args():
 def main():
     args = parse_args()
     
+    experiment_name = args.config
+    config_path = PROJECT_ROOT / "configs" / f"{experiment_name}.yaml"
+    if not config_path.exists():
+        raise FileNotFoundError(f"Config not found: {config_path}")
+    
     run_bias_field_attack(
-        config_path=args.config,
+        config_path=config_path,
+        modality=args.modality,
         start_index=args.start_index,
         end_index=args.end_index,
         output_path=args.output_path,

@@ -6,6 +6,12 @@ from torchvision.transforms import InterpolationMode
 from torchvision.transforms.functional import resize, to_pil_image
 from transformers.models.qwen2_vl.image_processing_qwen2_vl import smart_resize
 
+MODALITY = {
+    "mri": "MRI",
+    "ct": "CT",
+    "us": "Ultrasound",
+}
+
 dtype = torch.bfloat16
 
 def load_image_tensor(image_path, device="cuda"):

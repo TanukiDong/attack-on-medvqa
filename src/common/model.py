@@ -13,7 +13,6 @@ from transformers import (
 
 from common.preprocess import process_image, tensor_to_pil
 
-
 VALID_ANSWERS = ("A", "B", "C", "D")
 
 QUESTION_TEMPLATE = """
@@ -180,7 +179,7 @@ def run_model(question, image, model, processor, generation_config, device="cuda
         return_tensors="pt",
     ).to(device)
 
-    generated_ids = model.generate(**inputs, use_cache=True, generation_config=generation_config)
+    generated_ids = model.generate(**inputs, use_cache=True, generation_config=generation_config, do_sample=False)
     generated_ids_trimmed = [out_ids[len(in_ids):] for in_ids, out_ids in zip(inputs.input_ids, generated_ids)]
     output_text = processor.batch_decode(generated_ids_trimmed, skip_special_tokens=True, clean_up_tokenization_spaces=False)
 
