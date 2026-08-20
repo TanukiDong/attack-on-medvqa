@@ -1,6 +1,6 @@
 import torch
 
-from attacks.bias_field.bias_field import clamp_ste, generate_bias_field
+from attacks.bias_field.bias_field import generate_bias_field
 from attacks.bias_field.loss import compute_loss, get_choice_probs
 from attacks.bias_field.visualization import plot_bias_field_attack
 from common.eval import eval_image
@@ -79,7 +79,7 @@ def attack_bf(
     
     # Debug visualization
     if debug:
-        initial_bias_field = clamp_ste(image * bias_field, 0, 1)
+        initial_bias_field = torch.clamp(image * bias_field, 0, 1)
         plot_bias_field_attack(
             image=image.detach().cpu().float(),
             bias_field=bias_field.detach().cpu().float(),
@@ -133,7 +133,7 @@ def attack_bf(
         )
 
         # Clamp image into [0, 1]
-        adversarial_image = clamp_ste(image * bias_field, 0, 1)
+        adversarial_image = torch.clamp(image * bias_field, 0, 1)
 
         evaluate_step = (step + 1) % eval_step == 0 or step == num_steps - 1
         

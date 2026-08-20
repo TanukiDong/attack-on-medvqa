@@ -69,19 +69,10 @@ def get_image_info(image_tensor, image_processor):
 
     return resized_h, resized_w, image_grid_thw
 
-def quantize_uint8_ste(image):
-    """Quantize image to uint8 using straight-through estimator to preserve gradients."""
-    image = image.clamp(0, 1)
-    quantized = torch.floor(image * 255.0) / 255.0
-    return image + (quantized - image).detach()
-
 def process_image(image, image_processor):
     """Process image for the model"""
     if image.ndim == 4:
         image = image.squeeze(0)
-    
-    # Quantize image
-    image = quantize_uint8_ste(image)
     
     # Resize image
     resized_h, resized_w, grid = get_image_info(image, image_processor)

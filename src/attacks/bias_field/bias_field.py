@@ -147,9 +147,3 @@ def generate_bias_field(image_tensor, bias_config, control_points=None, computat
         bias_field = bias_field.expand(-1, channels, -1, -1)
 
     return control_points, bias_field
-
-
-def clamp_ste(tensor, min_value=0.0, max_value=1.0):
-    """Clamp tensor values with straight-through estimator to preserve gradients."""
-    clipped = tensor.clamp(min_value, max_value)
-    return tensor + (clipped - tensor).detach()
