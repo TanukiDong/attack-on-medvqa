@@ -6,6 +6,7 @@ from common.model import load_model
 from attacks.bias_field.validate import validate_answers
 
 PROJECT_ROOT = find_project_root()
+CONFIG_PATH = PROJECT_ROOT / "configs"
 RESULTS_PATH = PROJECT_ROOT / "result" / "MedVLM-R1" / "bias_field_attack"
 
 def parse_args():
@@ -37,20 +38,18 @@ def parse_args():
 def main():
     args = parse_args()
 
-    experiment_directory = RESULTS_PATH / args.modality / args.config
+    config_path = CONFIG_PATH / f"{args.config}.yaml"
+    config = load_config(config_path)
+    
+    initialization = "random" if config["bias_field"]["random_start"] else "identity"
+    experiment_directory = RESULTS_PATH / args.modality / args.config / initialization
     if not experiment_directory.is_dir():
         raise FileNotFoundError(f"Experiment directory not found: {experiment_directory}")
     
-    config_path = experiment_directory / "config.yaml"
-
-    config = load_config(config_path)
-    experiment_config = config["experiment"]
-    model_config = config["model"]
-
-    set_seed(experiment_config.get("seed", 42), deterministic=True)
+    set_seed(config["experiment"].get("seed", 42), deterministic=True)
 
     # load model
-    model, processor, generation_config = load_model(model_config)
+    model, processor, generation_config = load_model(config["model"])
 
     # Validation
     print(f"Validating modality {args.modality} config {args.config}: {experiment_directory}")

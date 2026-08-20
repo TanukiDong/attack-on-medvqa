@@ -48,16 +48,17 @@ def run_bias_field_attack(
     bias_config = config["bias_field"]
 
     verbose = experiment_config.get("verbose", 1)
-
+    
     experiment_name = config_path.stem
+    initialization = "random" if bias_config["random_start"] else "identity"
 
     # Override default output path
     if output_path is not None:
         output_directory = resolve_project_path(output_path, project_root)
     else:
-        output_directory = project_root / "result" / "MedVLM-R1" / "bias_field_attack"
+        output_directory = project_root / "result" / "MedVLM-R1" / "bias_field_attack" / initialization
         
-    output_directory = output_directory / modality / experiment_name
+    output_directory = output_directory / modality / experiment_name / initialization
     
     # Bacth output for HPC
     if output_subpath is not None:
