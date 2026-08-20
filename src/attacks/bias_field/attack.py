@@ -263,10 +263,7 @@ def attack_bf(
                 print(repr(intermediate_output))
 
                 if choice_probs is not None:
-                    if loss_scope == "conditioned_answer":
-                        print("Conditioned choice probabilities:")
-                    else:
-                        print("Choice probabilities:")
+                    print("Vocabulary choice probabilities:")
                     for letter, probability in zip(VALID_ANSWERS, choice_probs):
                         print(f"  {letter}: {probability.item() * 100:.2f}%")
 

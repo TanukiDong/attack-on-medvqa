@@ -8,17 +8,36 @@ def get_choice_logits(selected_logits, answer_token_ids):
     """Get the logits corresponding to the answer choices (A, B, C, D)."""
     if selected_logits.shape[0] != 1:
         raise RuntimeError(f"Expected exactly one answer position, but got {selected_logits.shape[0]} positions.")
-    choice_token_ids = torch.tensor(
-        [answer_token_ids[x] for x in VALID_ANSWERS],
-        device=selected_logits.device,)
+    
+    # Extract probabilities belonging to A-D
+    choice_token_ids = get_choice_token_ids(answer_token_ids, device=selected_logits.device)
     return selected_logits[0, choice_token_ids].float()
-
 
 def get_choice_probs(selected_logits, answer_token_ids):
     """Get the probabilities corresponding to the answer choices (A, B, C, D)."""
     choice_logits = get_choice_logits(selected_logits, answer_token_ids)
-    return torch.softmax(choice_logits, dim=0)
+    return F.softmax(choice_logits, dim=0)
 
+def get_vocab_choice_probs(selected_logits, answer_token_ids):
+    """Get next-token probabilities of A-D relative to the entire model vocabulary."""
+    if selected_logits.shape[0] != 1:
+        raise RuntimeError(
+            f"Expected exactly one answer position, but got {selected_logits.shape[0]} positions.")
+
+    # Softmax over the entire vocabulary
+    vocab_probs = F.softmax(selected_logits[0].float(), dim=0)
+
+    # Extract probabilities belonging to A-D
+    choice_token_ids = get_choice_token_ids(answer_token_ids, device=selected_logits.device)
+
+    return vocab_probs[choice_token_ids]
+
+def get_choice_token_ids(answer_token_ids, device):
+    """Get the token IDs corresponding to the answer choices (A, B, C, D)."""
+    return torch.tensor(
+        [answer_token_ids[x] for x in VALID_ANSWERS],
+        device=device,
+        dtype=torch.long)
 
 def choice_ce_loss(logits, target, answer_token_ids):
     """Compute cross-entropy loss for the answer choices (A, B, C, D)."""
@@ -94,7 +113,8 @@ def compute_loss(selected_logits, selected_labels, target, answer_token_ids, att
         raise RuntimeError("The loss has no gradient.")
 
     if loss_scope in {"choice_answer", "conditioned_answer"}:
-        choice_probs = get_choice_probs(selected_logits, answer_token_ids)
+        # choice_probs = get_choice_probs(selected_logits, answer_token_ids)
+        choice_probs = get_vocab_choice_probs(selected_logits, answer_token_ids)
     else:
         choice_probs = None
 
