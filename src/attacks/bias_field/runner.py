@@ -56,9 +56,9 @@ def run_bias_field_attack(
     if output_path is not None:
         output_directory = resolve_project_path(output_path, project_root)
     else:
-        output_directory = project_root / "result" / "MedVLM-R1" / "bias_field_attack" / initialization
+        output_directory = project_root / "result" / "MedVLM-R1" / "bias_field_attack"
         
-    output_directory = output_directory / modality / experiment_name / initialization
+    output_directory = output_directory / modality / initialization/ experiment_name 
     
     # Bacth output for HPC
     if output_subpath is not None:
