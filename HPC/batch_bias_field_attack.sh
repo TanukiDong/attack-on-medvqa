@@ -42,7 +42,6 @@ do
 
         sbatch \
             --job-name="${modality}_${config}" \
-            --export=CONFIG="$config",MODALITY="$modality" \
-            HPC/bias_field_attack.sh
+            HPC/bias_field_attack.sh "$config" "$modality"
     done
 done

@@ -3,8 +3,8 @@
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:1
 #SBATCH --qos=gpu
-#SBATCH --mem=16G
-#SBATCH --time=00:45:00
+#SBATCH --mem=8G
+#SBATCH --time=00:30:00
 #SBATCH --output=HPC/output/%x_%j.out
 #SBATCH --error=HPC/output/%x_%j.err
 #SBATCH --mail-type=ALL
