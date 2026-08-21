@@ -58,6 +58,17 @@ def choice_ce_loss(logits, target, answer_token_ids):
 
     return ce_loss
 
+def choice_entropy_loss(logits, answer_token_ids):
+    """Compute entropy over the answer choices (A, B, C, D)."""
+    choice_logits = get_choice_logits(logits, answer_token_ids)
+
+    choice_probs = F.softmax(choice_logits, dim=0)
+    choice_log_probs = F.log_softmax(choice_logits, dim=0)
+
+    # -Σ(p * log(p)) 
+    entropy = -(choice_probs * choice_log_probs).sum()
+
+    return entropy
 
 def compute_loss(selected_logits, selected_labels, target, answer_token_ids, attack_config, clean_probs=None):
     """Compute the loss based on the selected logits and labels."""
@@ -86,6 +97,15 @@ def compute_loss(selected_logits, selected_labels, target, answer_token_ids, att
                 f"Unsupported loss_scope for cross_entropy: {loss_scope}"
             )
 
+    elif loss_type == "entropy":
+        if loss_scope in {"choice_answer", "conditioned_answer"}:
+            loss = choice_entropy_loss(
+                logits=selected_logits,
+                answer_token_ids=answer_token_ids,
+            )
+        else:
+            raise ValueError(f"Unsupported loss_scope for entropy: {loss_scope}")
+
     elif loss_type == "kl":
         if clean_probs is None:
             raise ValueError("KL loss requires clean_probs.")
@@ -113,7 +133,6 @@ def compute_loss(selected_logits, selected_labels, target, answer_token_ids, att
         raise RuntimeError("The loss has no gradient.")
 
     if loss_scope in {"choice_answer", "conditioned_answer"}:
-        # choice_probs = get_choice_probs(selected_logits, answer_token_ids)
         choice_probs = get_vocab_choice_probs(selected_logits, answer_token_ids)
     else:
         choice_probs = None

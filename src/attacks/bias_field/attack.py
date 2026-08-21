@@ -263,9 +263,11 @@ def attack_bf(
                 print(repr(intermediate_output))
 
                 if choice_probs is not None:
-                    print("Vocabulary choice probabilities:")
+                    print("Next-token probabilities:")
                     for letter, probability in zip(VALID_ANSWERS, choice_probs):
                         print(f"  {letter}: {probability.item() * 100:.2f}%")
+                    other_prob = (1.0 - choice_probs.sum()).clamp(min=0.0)
+                    print(f"  Others: {other_prob.item() * 100:.2f}%")
 
 
         history.append(history_entry)
