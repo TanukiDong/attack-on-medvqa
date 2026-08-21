@@ -41,8 +41,9 @@ def main():
     config_path = CONFIG_PATH / f"{args.config}.yaml"
     config = load_config(config_path)
     
+    loss_type = config["attack"]["loss_type"]
     initialization = "random" if config["bias_field"]["random_start"] else "identity"
-    experiment_directory = RESULTS_PATH / args.modality / args.config / initialization
+    experiment_directory = RESULTS_PATH / args.modality / loss_type / args.config / initialization
     if not experiment_directory.is_dir():
         raise FileNotFoundError(f"Experiment directory not found: {experiment_directory}")
     
