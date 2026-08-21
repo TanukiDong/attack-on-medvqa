@@ -1,7 +1,7 @@
 import torch
 
 from attacks.bias_field.bias_field import generate_bias_field
-from attacks.bias_field.loss import compute_loss, get_choice_probs
+from attacks.bias_field.loss import compute_loss, get_clean_probs
 from attacks.bias_field.visualization import plot_bias_field_attack
 from common.eval import eval_image
 from common.model import (
@@ -95,7 +95,7 @@ def attack_bf(
     # Adam optimizer
     optimizer = torch.optim.Adam([control_points], lr=learning_rate)
 
-    # Clean probs for KL loss
+    # clean_probs for KL loss
     clean_probs = None
     if loss_type == "kl":
         with torch.no_grad():
@@ -108,11 +108,12 @@ def attack_bf(
                 device=device,
             )
 
-            clean_probs = get_choice_probs(
-                clean_logits,
-                answer_token_ids,
-            ).detach()
-            
+            clean_probs = get_clean_probs(
+                clean_logits=clean_logits,
+                loss_scope=loss_scope,
+                answer_token_ids=answer_token_ids,
+            )
+                
     history = []
     best_candidate = None
     patience_counter = None

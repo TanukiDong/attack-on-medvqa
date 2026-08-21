@@ -13,11 +13,6 @@ def get_choice_logits(selected_logits, answer_token_ids):
     choice_token_ids = get_choice_token_ids(answer_token_ids, device=selected_logits.device)
     return selected_logits[0, choice_token_ids].float()
 
-def get_choice_probs(selected_logits, answer_token_ids):
-    """Get the probabilities corresponding to the answer choices (A, B, C, D)."""
-    choice_logits = get_choice_logits(selected_logits, answer_token_ids)
-    return F.softmax(choice_logits, dim=0)
-
 def get_vocab_choice_probs(selected_logits, answer_token_ids):
     """Get next-token probabilities of A-D relative to the entire model vocabulary."""
     if selected_logits.shape[0] != 1:
@@ -38,6 +33,18 @@ def get_choice_token_ids(answer_token_ids, device):
         [answer_token_ids[x] for x in VALID_ANSWERS],
         device=device,
         dtype=torch.long)
+
+def get_clean_probs(clean_logits, loss_scope, answer_token_ids):
+    """Get the clean reference probabilities for KL divergence."""
+    if loss_scope == "answer":
+        clean_logits = get_choice_logits(
+            clean_logits,
+            answer_token_ids,
+        )
+    elif loss_scope != "full_output":
+        raise ValueError(f"Unsupported loss_scope for KL loss: {loss_scope}")
+
+    return F.softmax(clean_logits.float(), dim=-1).detach()
 
 def choice_ce_loss(logits, target, answer_token_ids):
     """Compute cross-entropy loss for the answer choices (A, B, C, D)."""
@@ -76,12 +83,7 @@ def compute_loss(selected_logits, selected_labels, target, answer_token_ids, att
     loss_scope = attack_config["loss_scope"]
 
     if loss_type == "cross_entropy":
-        if loss_scope == "vocab_answer":
-            loss = F.cross_entropy(
-                input=selected_logits.float(),
-                target=selected_labels,
-            )
-        elif loss_scope in {"choice_answer", "conditioned_answer"}:
+        if loss_scope == "answer":
             loss = choice_ce_loss(
                 logits=selected_logits,
                 target=target,
@@ -94,36 +96,46 @@ def compute_loss(selected_logits, selected_labels, target, answer_token_ids, att
             )
         else:
             raise ValueError(
-                f"Unsupported loss_scope for cross_entropy: {loss_scope}"
+                f"Unsupported loss_scope for cross_entropy loss: {loss_scope}"
             )
 
     elif loss_type == "entropy":
-        if loss_scope in {"choice_answer", "conditioned_answer"}:
+        if loss_scope == "answer":
             loss = choice_entropy_loss(
                 logits=selected_logits,
                 answer_token_ids=answer_token_ids,
             )
         else:
-            raise ValueError(f"Unsupported loss_scope for entropy: {loss_scope}")
+            raise ValueError(f"Unsupported loss_scope for entropy loss: {loss_scope}")
 
     elif loss_type == "kl":
         if clean_probs is None:
             raise ValueError("KL loss requires clean_probs.")
 
-        if loss_scope == "choice_answer":
+        if loss_scope == "answer":
             adv_choice_logits = get_choice_logits(
                 selected_logits,
                 answer_token_ids,
             )
-            adv_log_probs = F.log_softmax(adv_choice_logits, dim=0)
+            adv_log_probs = F.log_softmax(adv_choice_logits, dim=-1)
 
             loss = F.kl_div(
                 input=adv_log_probs.unsqueeze(0),
                 target=clean_probs.unsqueeze(0),
                 reduction="batchmean", # See https://docs.pytorch.org/docs/2.13/generated/torch.nn.functional.kl_div.html
             )
+            
+        elif loss_scope == "full_output":
+            adv_log_probs = F.log_softmax(selected_logits.float(), dim=-1)
+
+            loss = F.kl_div(
+                input=adv_log_probs,
+                target=clean_probs,
+                reduction="batchmean",
+            )
+            
         else:
-            raise ValueError(f"Unsupported loss_scope for KL: {loss_scope}")
+            raise ValueError(f"Unsupported loss_scope for KL loss: {loss_scope}")
     else:
         raise ValueError(f"Unsupported loss type: {loss_type}")
 
@@ -132,7 +144,7 @@ def compute_loss(selected_logits, selected_labels, target, answer_token_ids, att
     if not loss.requires_grad:
         raise RuntimeError("The loss has no gradient.")
 
-    if loss_scope in {"choice_answer", "conditioned_answer"}:
+    if loss_scope == "answer":
         choice_probs = get_vocab_choice_probs(selected_logits, answer_token_ids)
     else:
         choice_probs = None

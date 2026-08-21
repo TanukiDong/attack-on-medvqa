@@ -108,7 +108,7 @@ def build_message(question, image_source):
 
 def build_attack_input(tensor_image, problem, target, processor, answer_token_ids, loss_scope, device="cuda", reference_output=None, verbose=1):
     """"Prepare the input and labels for the model based on the loss scope."""
-    if loss_scope not in {"choice_answer", "vocab_answer", "full_output", "conditioned_answer"}:
+    if loss_scope not in {"answer", "full_output"}:
         raise ValueError(f"Unsupported loss_scope: {loss_scope}")
 
     if tensor_image.ndim == 4:
@@ -118,13 +118,8 @@ def build_attack_input(tensor_image, problem, target, processor, answer_token_id
     
     pil_image = tensor_to_pil(tensor_image)
     prompt_text = processor.apply_chat_template(message, tokenize=False, add_generation_prompt=True)
-
-    if loss_scope in {"choice_answer", "vocab_answer"}:
-        if target is None:
-            raise ValueError("target is required for answer-only loss.")
-        target_text = f"<answer>{target}</answer>"
-        
-    elif loss_scope in {"conditioned_answer"}:
+  
+    if loss_scope == "answer":
         if reference_output is None:
             raise ValueError("reference_output is required for conditioned-answer loss.")
         # target_text = reference_output.strip()
@@ -133,7 +128,7 @@ def build_attack_input(tensor_image, problem, target, processor, answer_token_id
             raise RuntimeError(f"Invalid reasoning in model output : {reference_output}.")
         target_text = f"<think>{thought}</think>\n<answer>{target}</answer>"
         
-    elif loss_scope in {"full_output"}:
+    elif loss_scope == "full_output":
         if reference_output is None:
             raise ValueError("reference_output is required for full-output loss.")
         target_text = reference_output.strip()
@@ -154,7 +149,7 @@ def build_attack_input(tensor_image, problem, target, processor, answer_token_id
     target_start = inputs.input_ids.size(1) - target_ids.size(1)
     labels = torch.full_like(inputs.input_ids, -100)
 
-    if loss_scope in {"choice_answer", "vocab_answer", "conditioned_answer"}:
+    if loss_scope == "answer":
         # Find the position of the answer token in the input_ids
         answer_token_id = answer_token_ids[target]
         # Search only inside the clean generated output
@@ -162,7 +157,7 @@ def build_attack_input(tensor_image, problem, target, processor, answer_token_id
         matches = torch.where(target_input_ids == answer_token_id)[0]
         answer_position = target_start + matches[-1].item()
         labels[0, answer_position] = answer_token_id
-    elif loss_scope in {"full_output"}:
+    elif loss_scope == "full_output":
         labels[0, target_start:] = inputs.input_ids[0, target_start:]
         
     if verbose > 1:
