@@ -29,7 +29,7 @@ def plot_bias_field_attack(
 
     # Save image
     torch.save(bias_field, debug_dir["bias_field_directory"] / f"bias_field_{step:04d}.pt")
-    plt.imsave(debug_dir["bias_field_directory"] / f"bias_field_{step:04d}.png", bias_field, cmap="jet", vmin=1 - epsilon, vmax=1 + epsilon)
+    plt.imsave(debug_dir["bias_field_directory"] / f"bias_field_{step:04d}.png", bias_field, cmap="seismic", vmin=1 - epsilon, vmax=1 + epsilon)
     plt.imsave(debug_dir["attacked_image_directory"] / f"attacked_image_{step:04d}.png", biased_image, cmap="gray", vmin=0, vmax=1)
     plt.imsave(debug_dir["difference_directory"] / f"difference_{step:04d}.png", difference, cmap="binary", vmin=0, vmax=1)
 
@@ -42,7 +42,7 @@ def plot_bias_field_attack(
     axes[0].axis("off")
 
     # Bias field
-    bias_plot = axes[1].imshow(bias_field, cmap="jet", vmin=1 - epsilon, vmax=1 + epsilon)
+    bias_plot = axes[1].imshow(bias_field, cmap="seismic", vmin=1 - epsilon, vmax=1 + epsilon)
     axes[1].set_title(f"Bias Field \n min={bias_field.min().item():.4f}, max={bias_field.max().item():.4f}")
     axes[1].axis("off")
     fig.colorbar(bias_plot, ax=axes[1])
@@ -112,7 +112,7 @@ def plot_progressive_bias_field_attack(
             biased_image = torch.clamp(image * bias_field, min=0, max=1)
 
             # Bias field
-            axes[0, col].imshow(bias_field, cmap="jet", vmin=1 - epsilon, vmax=1 + epsilon)
+            axes[0, col].imshow(bias_field, cmap="seismic", vmin=1 - epsilon, vmax=1 + epsilon)
             axes[0, col].set_title(f"Step {step}")
             axes[0, col].axis("off")
 
