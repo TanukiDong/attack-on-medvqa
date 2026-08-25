@@ -1,0 +1,24 @@
+experiment:
+  seed: 42
+  verbose: 1
+
+model:
+  path: JZPeterPan/MedVLM-R1
+  hf_cache: /data/huggingface_cache
+
+attack:
+  num_steps: 1000
+  learning_rate: 0.01
+  eval_step: 50
+  print_step: 200
+  early_stopping: true
+  early_stopping_patience: 0
+  loss_type: kl
+  loss_scope: answer
+
+bias_field:
+  epsilon: 0.5
+  control_point_spacing: [128, 128]
+  downscale: 8
+  interpolation_order: 3
+  random_start: true
