@@ -21,4 +21,4 @@ bias_field:
   control_point_spacing: [8, 8]
   downscale: 8
   interpolation_order: 3
-  random_start: true
+  random_start: false
