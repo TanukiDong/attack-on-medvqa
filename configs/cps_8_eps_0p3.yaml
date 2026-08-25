@@ -13,7 +13,7 @@ attack:
   print_step: 200
   early_stopping: true
   early_stopping_patience: 0
-  loss_type: entropy
+  loss_type: cross_entropy
   loss_scope: answer
 
 bias_field:
