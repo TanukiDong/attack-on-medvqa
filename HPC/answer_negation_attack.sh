@@ -1,0 +1,41 @@
+#!/bin/bash
+#SBATCH --job-name=answer_negation_attack
+#SBATCH --partition=gpu
+#SBATCH --gres=gpu:1
+#SBATCH --qos=gpu
+#SBATCH --mem=8G
+#SBATCH --output="HPC/output/answer_negation_attack_%x_%A_%a.out"
+#SBATCH --error="HPC/output/answer_negation_attack_%x_%A_%a.err"
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=twanavit1@sheffield.ac.uk
+
+export HF_HOME=/mnt/parscratch/users/acp25tw/huggingface_cache
+
+cd "$HOME/dissertation/attack-on-medvqa"
+
+source gpu_env.sh
+
+MODALITY="${1:-}"
+
+if [[ -z "$MODALITY" ]]; then
+    echo "ERROR: MODALITY is not set"
+    exit 1
+fi
+
+echo "============================================================"
+echo "Modality: $MODALITY"
+echo "Array job ID: ${SLURM_ARRAY_JOB_ID:-N/A}"
+echo "Array task ID: ${SLURM_ARRAY_TASK_ID:-N/A}"
+echo "Job ID: ${SLURM_JOB_ID:-N/A}"
+echo "Node: $(hostname)"
+echo "Started: $(date)"
+echo "Working directory: $(pwd)"
+python --version
+echo "============================================================"
+
+python HPC/answer_negation_attack.py \
+    --modality "$MODALITY"
+
+echo "============================================================"
+echo "Completed: $(date)"
+echo "============================================================"
