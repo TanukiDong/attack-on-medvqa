@@ -859,7 +859,7 @@ def main():
         PROJECT_ROOT
         / "result"
         / "MedVLM-R1"
-        / "bias_field_answer_negation"
+        / "combined_attack"
         / args.modality
     )
 
