@@ -859,7 +859,7 @@ def main():
         PROJECT_ROOT
         / "result"
         / "MedVLM-R1"
-        / "combined_attack"
+        / "multimodal_attack"
         / args.modality
     )
 
