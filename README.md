@@ -1,7 +1,9 @@
 # attack-on-medvqa
 Attack on MedVQA
 
-Extract samples
+## Prepare Samples
+
+Extract correct samples
 ```bash
 # Local
 uv run scripts/extract_samples.py --modality mri --samples 10 --overwrite
@@ -10,6 +12,8 @@ uv run scripts/extract_samples.py --modality mri --samples 10 --overwrite
 sbatch HPC/extract_samples.sh mri 10
 bash HPC/batch_extract_samples.sh
 ```
+
+## Bias Field Attack
 
 Running bias field attack
 ```bash
@@ -38,4 +42,20 @@ python HPC/combine_result.py
 
 # Default path : result/MedVLM-R1/bias_field_attack
 python combine_result.py path/to/attack/result/folder
+```
+
+## Answer Negation Attack
+
+Create answer negation samples
+```bash
+uv run scripts/answer_negation_prepare.py --modality mri
+```
+
+
+```bash
+# Local
+uv run scripts/answer_negation_attack.py --modality mri
+
+# HPC
+
 ```
