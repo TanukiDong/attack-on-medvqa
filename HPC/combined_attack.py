@@ -1,6 +1,5 @@
 import argparse
 import json
-from platform import processor
 import sys
 from pathlib import Path
 
@@ -13,7 +12,6 @@ INITIALIZATION_CHOICES = ("random", "identity")
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
-from common import model
 from common.io import (
     append_jsonl,
     load_completed_ids,

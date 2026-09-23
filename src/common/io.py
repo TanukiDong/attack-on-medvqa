@@ -1,5 +1,6 @@
 import csv
 import json
+import re
 import shutil
 import yaml
 from pathlib import Path
@@ -163,6 +164,25 @@ def get_output_paths(question_id, attacked_image_directory, bias_field_directory
     bias_field_path = Path(bias_field_directory) / f"{safe_id}_bias_field.pt"
     return attacked_image_path, bias_field_path
 
+def load_jsonl(path):
+    """Load records from a JSONL file."""
+    path = Path(path)
+
+    if not path.exists():
+        return []
+
+    records = []
+
+    with path.open("r", encoding="utf-8") as file:
+        for line_number, line in enumerate(file, start=1):
+            line = line.strip()
+
+            if not line:
+                continue
+
+            records.append(json.loads(line))
+
+    return records
 
 def append_jsonl(path, record):
     """Append a record to a JSONL file."""
@@ -192,3 +212,137 @@ def append_attack_history(path, question_id, history):
                     "evaluated": entry["evaluated"],
                 }
             )
+
+def batch_sort_key(path):
+    """Sort batch_0, batch_1, ..., batch_19 numerically."""
+
+    match = re.fullmatch(
+        r"batch_(\d+)",
+        path.name,
+    )
+
+    if match is None:
+        return float("inf")
+
+    return int(match.group(1))
+
+def get_attacked_image_path(batch_directory, question_id,):
+    """
+    Get the saved bias field attacked image.
+    """
+
+    safe_id = str(question_id).replace(":", "_")
+
+    attacked_image_path = (batch_directory / "attacked_images" / f"{safe_id}_biased.png")
+
+    if not attacked_image_path.exists():
+        raise FileNotFoundError(f"Attacked image not found for {question_id}: {attacked_image_path}")
+
+    return attacked_image_path
+
+def combine_batch(source_config_directory):
+    """
+    Collect attack results from all batch directories of a configuration.
+    """
+
+    batch_directories = sorted(
+        [
+            path
+            for path in source_config_directory.glob("batch_*")
+            if path.is_dir()
+        ],
+        key=batch_sort_key,
+    )
+
+    if not batch_directories:
+        raise RuntimeError(f"No batch directories found under: {source_config_directory}")
+
+    samples = []
+    
+    for batch_directory in batch_directories:
+        attack_results_path = (batch_directory / "attack_results.jsonl")
+
+        if not attack_results_path.exists():
+            raise FileNotFoundError(f"Missing attack results: {attack_results_path}")
+
+        batch_results = load_jsonl(attack_results_path)
+
+        for bias_result in batch_results:
+
+            samples.append(
+                {
+                    "batch_directory": batch_directory,
+                    "bias_result": bias_result,
+                }
+            )
+
+    return samples
+
+def find_config(root_directory, loss=None, initialization=None, config=None):
+    """
+    Find configuration directories based on loss, initialization, and config parameters.
+    """
+
+    experiments = []
+
+    # Loss
+    if loss is not None:
+        losses = [loss]
+    else:
+        losses = ("cross_entropy", "entropy", "kl")
+
+    for loss_name in losses:
+        loss_directory = root_directory / loss_name
+
+        if not loss_directory.exists():
+            if loss is not None:
+                raise FileNotFoundError(f"Loss directory not found: {loss_directory}")
+            print(f"Skipping unavailable loss: {loss_name}")
+            continue
+
+        # Initialization
+        if initialization is not None:
+            initializations = [initialization]
+        else:
+            initializations = ("random", "identity")
+
+        for initialization_name in initializations:
+            initialization_directory = loss_directory / initialization_name
+
+            if not initialization_directory.exists():
+                if initialization is not None:
+                    raise FileNotFoundError(f"Initialization directory not found: {initialization_directory}")
+                print(f"Skipping unavailable combination: {loss_name}/{initialization_name}")
+                continue
+
+            # Config 
+            if config is not None:
+                config_directories = initialization_directory / config
+            else:
+                config_directories = [
+                    path
+                    for path in initialization_directory.iterdir()
+                    if (
+                        path.is_dir()
+                        and path.name.startswith("cps_")
+                    )
+                ]
+
+            for config_directory in config_directories:
+                if not config_directory.exists():
+                    print(f"Skipping missing configuration: {config_directory}")
+                    continue
+
+                batch_directories = [
+                    path
+                    for path in config_directory.glob("batch_*")
+                    if path.is_dir()
+                ]
+
+                if not batch_directories:
+                    print(f"Skipping configuration with no batches: {config_directory}")
+                    continue
+
+                experiments.append(config_directory)
+                
+    return experiments
